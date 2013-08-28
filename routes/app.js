@@ -103,10 +103,13 @@ function getAppDetails(url, callback) {
   });
 }
 
+function isValid(url) {
+  return url.indexOf('http://apps.microsoft.com/') === 0 || url.indexOf('http://www.windowsphone.com/') === 0;
+}
 
 exports.add = function(req, res) {
   var url = req.body.url;
-  if(!url) {
+  if(!url || !isValid(url)) {
     return res.send(400, 'Must supply a store deeplink to add.');
   }
 
