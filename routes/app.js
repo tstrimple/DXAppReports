@@ -6,17 +6,43 @@ var nstore = require('nstore'),
         for(var url in docs) {
           appCache.add(url, docs[url]);
         }
+
+        setTimeout(refreshApps, 600000);
       });
     }),
     cheerio = require('cheerio'),
-    request = require('request');
+    request = require('request'),
+    async = require('async');
 
 exports.list = function(req, res) {
   appCache.all(function(err, docs) {
-    console.log(docs);
     res.render('index', { apps: docs });    
   });
 };
+
+function refreshApp(app, callback) {
+  getAppDetails(app.url, function(err, details) {
+    if(err) return callback(err);
+    if(!details) return callback('No details retrieved');
+
+    apps.save(app.url, details, function(err) {
+      if(err) return callback(err);
+
+      appCache.add(app.url, details);
+      return callback();
+    });
+  });
+}
+
+function refreshApps() {
+  appCache.all(function(err, apps) {
+    async.each(Object.keys(apps), function(key, callback) {
+      refreshApp(apps[key], callback);
+    }, function(err) {
+      setTimeout(refreshApps, 600000);
+    });
+  });
+}
 
 function getPlatform(body) {
   $ = cheerio.load(body);
