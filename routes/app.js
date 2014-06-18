@@ -12,11 +12,25 @@ var nstore = require('nstore'),
     }),
     cheerio = require('cheerio'),
     request = require('request'),
-    async = require('async');
+    async = require('async'),
+    _ = require('underscore');
 
 exports.list = function(req, res) {
-  appCache.all(function(err, docs) {
-    res.render('index', { apps: docs });    
+  appCache.all(function(err, apps) {
+  	var clientApps = [];
+  	var phoneApps = [];
+  	_.each(apps, function(app) {
+  		if(app.platform === 'Windows 8') {
+  			clientApps.push(app);
+  		} else {
+				phoneApps.push(app);
+  		}
+  	});
+
+  	var sortedClientApps = _.sortBy(clientApps, function(app) { return app.rating * 1; });
+  	var sortedPhoneApps = _.sortBy(phoneApps, function(app) { return app.rating * 1; });
+
+		res.render('index', { clientApps: sortedClientApps, phoneApps: sortedPhoneApps });
   });
 };
 
@@ -48,7 +62,7 @@ function getPlatform(body) {
   $ = cheerio.load(body);
 
   var rating = $('#MainStars .RatingTextInline').text();
-  
+
   return rating ? 'Windows 8' : 'Windows Phone';
 }
 
@@ -63,7 +77,7 @@ function getRating(body) {
     }
   }
 
-  return rating; 
+  return rating;
 }
 
 function getTitle(body) {
@@ -74,7 +88,7 @@ function getTitle(body) {
     title = $('#application h1').text();
   }
 
-  return title; 
+  return title;
 }
 
 function getImage(body) {
@@ -85,7 +99,7 @@ function getImage(body) {
     image = $('img.appImage').attr('src');
   }
 
-  return image; 
+  return image;
 }
 
 function getAppDetails(url, callback) {
@@ -122,7 +136,7 @@ exports.add = function(req, res) {
 
     apps.save(url, details, function(err) {
       if(err) throw err;
-      
+
       appCache.add(url, details);
       res.redirect('/');
     });
