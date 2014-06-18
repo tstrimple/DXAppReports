@@ -6,14 +6,14 @@ var nstore = require('nstore'),
         for(var url in docs) {
           appCache.add(url, docs[url]);
         }
-
-        setTimeout(refreshApps, 600000);
+        refreshApps();
       });
     }),
     cheerio = require('cheerio'),
     request = require('request'),
     async = require('async'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    updated = null;
 
 exports.list = function(req, res) {
   appCache.all(function(err, apps) {
@@ -30,7 +30,8 @@ exports.list = function(req, res) {
   	var sortedClientApps = _.sortBy(clientApps, function(app) { return app.rating * 1; });
   	var sortedPhoneApps = _.sortBy(phoneApps, function(app) { return app.rating * 1; });
 
-		res.render('index', { clientApps: sortedClientApps, phoneApps: sortedPhoneApps });
+    console.log('sending', updated);
+		res.render('index', { clientApps: sortedClientApps, phoneApps: sortedPhoneApps, updated: updated });
   });
 };
 
@@ -53,6 +54,8 @@ function refreshApps() {
     async.each(Object.keys(apps), function(key, callback) {
       refreshApp(apps[key], callback);
     }, function(err) {
+      updated = new Date();
+    	console.log('updated', updated);
       setTimeout(refreshApps, 600000);
     });
   });
