@@ -13,6 +13,7 @@ var nstore = require('nstore'),
     request = require('request'),
     async = require('async'),
     _ = require('underscore'),
+    moment = require('moment-timezone'),
     updated = null;
 
 exports.list = function(req, res) {
@@ -54,7 +55,7 @@ function refreshApps() {
     async.each(Object.keys(apps), function(key, callback) {
       refreshApp(apps[key], callback);
     }, function(err) {
-      updated = new Date();
+      updated = moment().tz('America/Los_Angeles').format('MMMM Do YYYY, h:mm:ss a');
     	console.log('updated', updated);
       setTimeout(refreshApps, 600000);
     });

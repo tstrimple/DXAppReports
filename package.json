@@ -5,12 +5,15 @@
   "scripts": {
     "start": "node app.js"
   },
-  "engines" : { "node" : "0.10.28" },
+  "engines": {
+    "node": "0.10.28"
+  },
   "dependencies": {
     "async": "^0.9.0",
     "cheerio": "^0.17.0",
     "express": "3.3.6",
     "jade": "*",
+    "moment-timezone": "0.0.6",
     "nstore": "^0.5.2",
     "request": "^2.36.0",
     "underscore": "^1.6.0"
