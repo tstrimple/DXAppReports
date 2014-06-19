@@ -148,7 +148,7 @@ function getAppDetails(url, callback) {
 }
 
 function isValidRegionUrl(url, callback) {
-    request({ url: url, followRedirect: false, method: 'HEAD' }, function(err, resp, body) {
+    request({ url: url, followRedirect: true }, function(err, resp, body) {
     if(err || resp.statusCode != 200) {
       return callback(false);
     }
