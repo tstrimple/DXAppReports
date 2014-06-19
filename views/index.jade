@@ -11,12 +11,14 @@ block content
       th
     each app in clientApps
       - var status = (app.ratings >= 50 ? 'success' : 'danger');
-      tr(class=status)
+      tr.tt(class=status, data-toggle='tooltip', data-placement='bottom', title=app.regionBreakdown())
         td #{app.name}
-        td span.tt(data-toggle='tooltip', data-placement='right', title=app.regionBreakdown()) #{app.ratings} ratings
-        td #{app.getRatingChange()} new ratings
-        td a(href=app.primaryUrl, target='_BLANK') rate it now!
-        td a(href='/sync-ratings/' + app.storeId, target='_BLANK') update ratings
+        td #{app.ratings}
+        td #{app.getRatingChange()}
+        td
+          a(href=app.primaryUrl, target='_BLANK') rate it now!
+        td
+          a(href='/sync-ratings/' + app.storeId, target='_BLANK') update ratings
 
   h1 Windows Phone Apps to Rate
   table.table.table-hover.table-condensed
@@ -28,11 +30,13 @@ block content
       th
     each app in phoneApps
       - var status = (app.ratings >= 50 ? 'success' : 'danger');
-      tr(class=status)
+      tr.tt(class=status, data-toggle='tooltip', data-placement='bottom', title=app.regionBreakdown())
         td #{app.name}
-        td span.tt(data-toggle='tooltip', data-placement='right', title=app.regionBreakdown()) #{app.ratings}
+        td #{app.ratings}
         td #{app.getRatingChange()}
-        td a(href=app.primaryUrl, target='_BLANK') rate it now!
-        td a(href='/sync-ratings/' + app.storeId, target='_BLANK') update ratings
+        td
+          a(href=app.primaryUrl, target='_BLANK') rate it now!
+        td
+          a(href='/sync-ratings/' + app.storeId, target='_BLANK') update ratings
 
-  div.small Windows 8 app rating numbers are updated infrequently on the website. For the most up to date information, check the built in store in Windows 8.1.
+  div.small These ratings are pulled from the website and may not be up to date.
