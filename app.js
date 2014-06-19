@@ -1,9 +1,14 @@
-var express = require('express'),
-    apps = require('./routes/app'),
-    http = require('http'),
-    path = require('path');
-
+var express = require('express');
+var apps = require('./routes/app');
+var http = require('http');
+var path = require('path');
 var app = express();
+var mongoose = require('mongoose');
+
+if(!process.env.MONGO_URI) {
+	throw 'Must set MONGO_URI environment variable';
+}
+mongoose.connect(process.env.MONGO_URI);
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');

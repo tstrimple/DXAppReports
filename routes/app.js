@@ -1,73 +1,98 @@
 var nstore = require('nstore'),
-    nstore = nstore.extend(require('nstore/query')()),
-    appCache = require('../data/appcache'),
-    apps = nstore.new('data/apps.db', function() {
-      apps.all(function(err, docs) {
-        for(var url in docs) {
-          appCache.add(url, docs[url]);
-        }
-        refreshApps();
-      });
-    }),
+    App = require('../models/app');
     cheerio = require('cheerio'),
     request = require('request'),
     async = require('async'),
     _ = require('underscore'),
     moment = require('moment-timezone'),
-    updated = null;
+    updated = null,
+    countryCodes = ['en-us', 'af-ZA', 'sq-AL', 'ar-DZ', 'ar-BH', 'ar-EG', 'ar-IQ', 'ar-JO', 'ar-KW', 'ar-LB', 'ar-LY', 'ar-MA', 'ar-OM', 'ar-QA', 'ar-SA', 'ar-SY', 'ar-TN', 'ar-AE', 'ar-YE', 'hy-AM', 'Cy-az', 'Lt-az', 'eu-ES', 'be-BY', 'bg-BG', 'ca-ES', 'zh-CN', 'zh-HK', 'zh-MO', 'zh-SG', 'zh-TW', 'zh-CHS', 'zh-CHT', 'hr-HR', 'cs-CZ', 'da-DK', 'div-MV', 'nl-BE', 'nl-NL', 'en-AU', 'en-BZ', 'en-CA', 'en-CB', 'en-IE', 'en-JM', 'en-NZ', 'en-PH', 'en-ZA', 'en-TT', 'en-GB', 'en-ZW', 'et-EE', 'fo-FO', 'fa-IR', 'fi-FI', 'fr-BE', 'fr-CA', 'fr-FR', 'fr-LU', 'fr-MC', 'fr-CH', 'gl-ES', 'ka-GE', 'de-AT', 'de-DE', 'de-LI', 'de-LU', 'de-CH', 'el-GR', 'gu-IN', 'he-IL', 'hi-IN', 'hu-HU', 'is-IS', 'id-ID', 'it-IT', 'it-CH', 'ja-JP', 'kn-IN', 'kk-KZ', 'kok-IN', 'ko-KR', 'ky-KZ', 'lv-LV', 'lt-LT', 'mk-MK', 'ms-BN', 'ms-MY', 'mr-IN', 'mn-MN', 'nb-NO', 'nn-NO', 'pl-PL', 'pt-BR', 'pt-PT', 'pa-IN', 'ro-RO', 'ru-RU', 'sa-IN', 'Cy-sr', 'Lt-sr', 'sk-SK', 'sl-SI', 'es-AR', 'es-BO', 'es-CL', 'es-CO', 'es-CR', 'es-DO', 'es-EC', 'es-SV', 'es-GT', 'es-HN', 'es-MX', 'es-NI', 'es-PA', 'es-PY', 'es-PE', 'es-PR', 'es-ES', 'es-UY', 'es-VE', 'sw-KE', 'sv-FI', 'sv-SE', 'syr-SY', 'ta-IN', 'tt-RU', 'te-IN', 'th-TH', 'tr-TR', 'uk-UA', 'ur-PK', 'Cy-uz', 'Lt-uz', 'vi-VN'];
+
+function isNumber(obj) { return !isNaN(parseFloat(obj)) }
 
 exports.list = function(req, res) {
-  appCache.all(function(err, apps) {
-  	var clientApps = [];
-  	var phoneApps = [];
-  	_.each(apps, function(app) {
-  		if(app.platform === 'Windows 8') {
-  			clientApps.push(app);
-  		} else {
-				phoneApps.push(app);
-  		}
-  	});
-
-  	var sortedClientApps = _.sortBy(clientApps, function(app) { return app.rating * 1; });
-  	var sortedPhoneApps = _.sortBy(phoneApps, function(app) { return app.rating * 1; });
-
-    console.log('sending', updated);
-		res.render('index', { clientApps: sortedClientApps, phoneApps: sortedPhoneApps, updated: updated });
-  });
-};
-
-function refreshApp(app, callback) {
-  getAppDetails(app.url, function(err, details) {
-    if(err) return callback(err);
-    if(!details) return callback('No details retrieved');
-
-    apps.save(app.url, details, function(err) {
-      if(err) return callback(err);
-
-      appCache.add(app.url, details);
-      return callback();
+  App.find().exec(function(err, apps) {
+    var clientApps = [];
+    var phoneApps = [];
+    _.each(apps, function(app) {
+      if(app.platform === 'client') {
+        clientApps.push(app);
+      } else {
+        phoneApps.push(app);
+      }
     });
+    var sortedClientApps = _.sortBy(clientApps, function(app) { return app.ratings * 1; });
+    var sortedPhoneApps = _.sortBy(phoneApps, function(app) { return app.ratings * 1; });
+
+    res.render('index', { clientApps: sortedClientApps, phoneApps: sortedPhoneApps, updated: updated });
   });
 }
 
-function refreshApps() {
-  appCache.all(function(err, apps) {
-    async.each(Object.keys(apps), function(key, callback) {
-      refreshApp(apps[key], callback);
+function updateAllDetails() {
+  App.find().exec(function(err, apps) {
+    async.each(apps, function(app, next) {
+      getAppDetails(app.primaryUrl, function(err, details) {
+        app.name = details.name;
+        app.image = details.image;
+        app.save();
+        next();
+      });
     }, function(err) {
-      updated = moment().tz('America/Los_Angeles').format('MMMM Do YYYY, h:mm:ss a');
-    	console.log('updated', updated);
-      setTimeout(refreshApps, 600000);
+      console.log('updated all apps');
     });
   });
 }
 
-function getPlatform(body) {
-  $ = cheerio.load(body);
+function updateAllRegions() {
+  App.find().exec(function(err, apps) {
+    async.eachSeries(apps, function(app, next) {
+      updateAppRegions(app, next);
+    });
+  });
+}
 
-  var rating = $('#MainStars .RatingTextInline').text();
+function updateAppRegions(app, done) {
+  app.regions = [];
+  async.each(countryCodes, function(region, next) {
+    region = region.toLowerCase();
+    isValidRegionUrl(app.getUrl(region), function(isValid) {
+      if(isValid || region === 'en-us') {
+        app.regions.push(region);
+      }
+      next();
+    });
+  }, function(err) {
+    app.save();
+    console.log('updated', app.name, app.regions);
+    done();
+  });
+}
+updateAllRatings();
+function updateAllRatings() {
+  App.find({platform: 'client'}).exec(function(err, apps) {
+    async.eachSeries(apps, function(app, nextApp) {
 
-  return rating ? 'Windows 8' : 'Windows Phone';
+      async.each(app.regions, function(region, nextRegion) {
+        (function(region, nextRegion) {
+          var url = app.getUrl(region);
+          getAppRatings(url, function(err, ratings) {
+            if(ratings > 0) {
+              app.updateRatings(region, ratings);
+            }
+
+            nextRegion();
+          });
+        })(region, nextRegion);
+      }, function(err) {
+        app.save();
+        console.log('done with', app.name);
+        nextApp();
+      });
+
+    }, function(err) {
+      console.log('done updating ratings')
+    });
+  });
 }
 
 function getRating(body) {
@@ -80,6 +105,8 @@ function getRating(body) {
       rating = rating.split(' ')[0];
     }
   }
+
+  rating = isNumber(rating) ? rating : 0;
 
   return rating;
 }
@@ -106,18 +133,37 @@ function getImage(body) {
   return image;
 }
 
+function getAppRatings(url, callback) {
+  request({ url: url, followRedirect: false }, function(err, resp, body) {
+    if(err) {
+      callback(err);
+    }
+
+    var ratings = getRating(body);
+    callback(null, ratings * 1);
+  });
+}
+
 function getAppDetails(url, callback) {
-  request(url, function(err, resp, body) {
+  request({ url: url, followRedirect: false }, function(err, resp, body) {
     if(err) {
       callback(err);
     }
 
     var title = getTitle(body);
-    var rating = getRating(body);
     var image = getImage(body);
-    var platform = getPlatform(body);
 
-    callback(null, { url: url, title: title, rating: rating, image: image, platform: platform });
+    callback(null, { name: title, image: image });
+  });
+}
+
+function isValidRegionUrl(url, callback) {
+    request({ url: url, followRedirect: false, method: 'HEAD' }, function(err, resp, body) {
+    if(err || resp.statusCode != 200) {
+      return callback(false);
+    }
+
+    return callback(true);
   });
 }
 

@@ -14,14 +14,14 @@ block content
       th Ratings
       th Rate It!
     each app in clientApps
-      - var status = (app.rating >= 50 ? 'success' : 'danger');
+      - var status = (app.ratings >= 50 ? 'success' : 'danger');
       tr(class=status)
         td.logo
           img(src=app.image, alt='logo', style='width: 50px; height: 50px; background-color: #003053;')
-        td #{app.title}
-        td #{app.rating} ratings
+        td #{app.name}
+        td #{app.ratings} ratings
         td
-          a(href=app.url, target='_BLANK') rate it now!
+          a(href=app.primaryUrl, target='_BLANK') rate it now!
 
   h1.pull-left Windows Phone Apps to Rate
   table.table.table-hover.table-condensed
@@ -31,14 +31,14 @@ block content
       th Ratings
       th Rate It!
     each app in phoneApps
-      - var status = (app.rating >= 50 ? 'success' : 'danger');
+      - var status = (app.ratings >= 50 ? 'success' : 'danger');
       tr(class=status)
         td.logo
           img(src=app.image, alt='logo', style='width: 50px; height: 50px; background-color: #003053;')
-        td #{app.title}
-        td #{app.rating} ratings
+        td #{app.name}
+        td #{app.ratings} ratings
         td
-          a(href=app.url, target='_BLANK') rate it now!
+          a(href=app.primaryUrl, target='_BLANK') rate it now!
 
   div.small Windows 8 app rating numbers are updated infrequently on the website. For the most up to date information, check the built in store in Windows 8.1.
   div.small Last updated #{updated}
