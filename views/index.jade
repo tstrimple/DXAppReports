@@ -19,6 +19,8 @@ block content
         td #{app.getRatingChange()}
         td
           a(href=app.primaryUrl, target='_BLANK') rate it now!
+          br
+          a(href='/sync-ratings/' + app.storeId, target='_BLANK') update ratings
 
   h1 Windows Phone Apps to Rate
   table.table.table-hover.table-condensed
@@ -38,5 +40,7 @@ block content
         td #{app.getRatingChange()}
         td
           a(href=app.primaryUrl, target='_BLANK') rate it now!
+          br
+          a(href='/sync-ratings/' + app.storeId, target='_BLANK') update ratings
 
   div.small Windows 8 app rating numbers are updated infrequently on the website. For the most up to date information, check the built in store in Windows 8.1.
