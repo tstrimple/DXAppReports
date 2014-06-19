@@ -7,7 +7,6 @@ block content
       th
       th Title
       th Ratings
-      th Change
       th Rate It!
     each app in clientApps
       - var status = (app.ratings >= 50 ? 'success' : 'danger');
@@ -16,7 +15,7 @@ block content
           img(src=app.image, alt='logo', style='width: 50px; height: 50px; background-color: #003053;')
         td #{app.name}
         td
-          div #{app.ratings} ratings
+          span.tt(data-toggle='tooltip', data-placement='right', title=app.regionBreakdown()) #{app.ratings} ratings
           div #{app.getRatingChange()} new ratings
         td
           a(href=app.primaryUrl, target='_BLANK') rate it now!
@@ -37,7 +36,7 @@ block content
           img(src=app.image, alt='logo', style='width: 50px; height: 50px; background-color: #003053;')
         td #{app.name}
         td
-          div #{app.ratings} ratings
+          span.tt(data-toggle='tooltip', data-placement='right', title=app.regionBreakdown()) #{app.ratings} ratings
           div #{app.getRatingChange()} new ratings
         td
           a(href=app.primaryUrl, target='_BLANK') rate it now!

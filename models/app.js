@@ -16,6 +16,21 @@ var appSchema = new Schema({
   ratingHistory: [{ _id: Number, ratings: Number, regions: [ { _id: String, ratings: Number } ] }]
 });
 
+appSchema.methods.regionBreakdown = function() {
+	var today = moment().tz('America/Los_Angeles').format('YYYYMMDD');
+	var ratingsForToday = this.ratingHistory.id(today);
+	if(!ratingsForToday || !ratingsForToday.regions) {
+		return '';
+	}
+
+	var regions = [];
+	_.each(ratingsForToday.regions, function(region) {
+		regions.push(region._id + ': ' + region.ratings);
+	});
+
+	return regions.join('\n');
+}
+
 appSchema.methods.parseUrl = function(url) {
 	if(url.indexOf('windowsphone.com') > 0) {
 		this.platform = 'phone';

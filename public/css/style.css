@@ -6,3 +6,14 @@ body {
   width: 50px;
   padding: 0px;
 }
+
+div.tooltip {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.tooltip-inner {
+	white-space:pre-wrap;
+	text-align: left;
+}
