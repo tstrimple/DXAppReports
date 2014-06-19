@@ -33,7 +33,7 @@ appSchema.methods.getUrl = function(region) {
 }
 
 appSchema.methods.updateRatings = function(region, ratings) {
-	var today = moment().format('YYYYMMDD');
+	var today = moment().tz('America/Los_Angeles').format('YYYYMMDD');
 	var ratingsForToday = this.ratingHistory.id(today);
 	if(!ratingsForToday) {
 		ratingsForToday = { _id: today, ratings: 0, regions: [] };
@@ -55,7 +55,7 @@ appSchema.methods.updateRatings = function(region, ratings) {
 }
 
 appSchema.methods.getRatingChange = function() {
-	var today = moment().format('YYYYMMDD');
+	var today = moment().tz('America/Los_Angeles').format('YYYYMMDD');
 	var yesterday = today - 1;
 	var history = _.find(this.ratingHistory, function(day) { return day === yesterday; });
 	return history ? this.ratings - history.ratings : 0;
