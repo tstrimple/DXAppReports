@@ -43,14 +43,6 @@ function updateAllDetails() {
   });
 }
 
-function updateAllRegions() {
-  App.find().exec(function(err, apps) {
-    async.eachSeries(apps, function(app, next) {
-      updateAppRegions(app, next);
-    });
-  });
-}
-
 function updateAppRegions(app, done) {
   app.regions = [];
   async.each(countryCodes, function(region, next) {
@@ -63,13 +55,12 @@ function updateAppRegions(app, done) {
     });
   }, function(err) {
     app.save();
-    console.log('updated', app.name, app.regions);
-    done();
+    done(app.regions);
   });
 }
-updateAllRatings();
+
 function updateAllRatings() {
-  App.find({platform: 'client'}).exec(function(err, apps) {
+  App.find().exec(function(err, apps) {
     async.eachSeries(apps, function(app, nextApp) {
 
       async.each(app.regions, function(region, nextRegion) {
@@ -169,6 +160,82 @@ function isValidRegionUrl(url, callback) {
 
 function isValid(url) {
   return url.indexOf('http://apps.microsoft.com/') === 0 || url.indexOf('http://www.windowsphone.com/') === 0;
+}
+
+exports.syncRegions = function(req, res) {
+  App.find().exec(function(err, apps) {
+  	res.write('<html><body><h1>syncing regions</h1>');
+    async.eachSeries(apps, function(app, next) {
+    	res.write('<h2>' + app.name + '</h2>')
+      updateAppRegions(app, function(regions) {
+      	res.write('<p>' + regions.join(', ') + '</p>')
+      	next();
+      });
+    }, function() {
+    	res.end('<h3>done synchronizing regions</h3></body></html>');
+    });
+  });
+}
+
+exports.syncSingle = function(req, res) {
+	if(!req.params.id) {
+		return res.end('must supply app id');
+	}
+
+	App.findOne({ storeId: req.params.id }, function(err, app) {
+  	res.write('<html><body><h1>fetching ratings</h1>')
+
+		res.write('<h2>' + app.name + '</h2><code><ul>');
+    async.each(app.regions, function(region, nextRegion) {
+
+      (function(region, nextRegion) {
+        var url = app.getUrl(region);
+        getAppRatings(url, function(err, ratings) {
+        	res.write('<li>' + region + ': ' + ratings + '</li>');
+          if(ratings > 0) {
+            app.updateRatings(region, ratings);
+          }
+
+          nextRegion();
+        });
+    	})(region, nextRegion)
+  	}, function(err) {
+    	res.write('</ul></code>')
+      app.save();
+      res.end('<h3>done fetching ratings</h3></body></html>');
+    });
+  });
+}
+
+exports.syncRatings = function(req, res) {
+  App.find().exec(function(err, apps) {
+  	res.write('<html><body><h1>fetching ratings</h1>')
+    async.eachSeries(apps, function(app, nextApp) {
+    	res.write('<h2>' + app.name + '</h2><code><ul>');
+      async.each(app.regions, function(region, nextRegion) {
+
+        (function(region, nextRegion) {
+          var url = app.getUrl(region);
+          getAppRatings(url, function(err, ratings) {
+          	res.write('<li>' + region + ': ' + ratings + '</li>');
+            if(ratings > 0) {
+              app.updateRatings(region, ratings);
+            }
+
+            nextRegion();
+          });
+      	})(region, nextRegion)
+    	}, function(err) {
+      	res.write('</ul></code>')
+        app.save();
+        nextApp();
+      });
+
+    }, function(err) {
+      res.end('<h3>done fetching ratings</h3></body></html>');
+    });
+  });
+
 }
 
 exports.add = function(req, res) {

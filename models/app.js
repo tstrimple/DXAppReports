@@ -41,7 +41,7 @@ appSchema.methods.updateRatings = function(region, ratings) {
 		ratingsForToday = this.ratingHistory[0];
 	}
 
-	var regionRatings = _.find(ratingsForToday.regions, function(item) { return item.region === region; });
+	var regionRatings = _.find(ratingsForToday.regions, function(item) { return item._id === region; });
 	if(!regionRatings) {
 		regionRatings = { _id: region, ratings: ratings };
 		ratingsForToday.regions.push(regionRatings);
@@ -52,8 +52,6 @@ appSchema.methods.updateRatings = function(region, ratings) {
 
 	this.ratings = totalRatings;
 	ratingsForToday.ratings = totalRatings;
-	console.log(this.name, region, ratings, totalRatings);
-	console.log(this.name, this.ratingHistory);
 }
 
 appSchema.methods.getRatingChange = function() {

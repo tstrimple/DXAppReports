@@ -1,12 +1,7 @@
 extends layout
 
 block content
-  h1.pull-left Windows 8 Apps to Rate
-  form.form-inline.pull-right(action='/add', method='post', style='margin: 16px;')
-    div.form-group(style='margin-right: 8px;')
-      label.sr-only(for='url') Store Url
-      input.form-control(name='url', placeholder='store url')
-    input.btn.btn-default(type='submit', value='add app')
+  h1 Windows 8 Apps to Rate
   table.table.table-hover.table-condensed
     tr
       th
@@ -23,7 +18,7 @@ block content
         td
           a(href=app.primaryUrl, target='_BLANK') rate it now!
 
-  h1.pull-left Windows Phone Apps to Rate
+  h1 Windows Phone Apps to Rate
   table.table.table-hover.table-condensed
     tr
       th
@@ -41,4 +36,3 @@ block content
           a(href=app.primaryUrl, target='_BLANK') rate it now!
 
   div.small Windows 8 app rating numbers are updated infrequently on the website. For the most up to date information, check the built in store in Windows 8.1.
-  div.small Last updated #{updated}

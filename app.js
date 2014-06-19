@@ -26,6 +26,9 @@ if ('development' == app.get('env')) {
 
 app.get('/', apps.list);
 app.post('/add', apps.add);
+app.get('/sync-regions', apps.syncRegions);
+app.get('/sync-ratings', apps.syncRatings);
+app.get('/sync/:id', apps.syncSingle);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
