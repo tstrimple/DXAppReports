@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+  var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var moment = require('moment-timezone');
 var util = require('util');
@@ -31,7 +31,7 @@ schema.statics.appsNeedingRatings = function(callback) {
   this.aggregate([
     { $match: { date: date }},
     { $group: { _id: { storeId: '$storeId', segment: '$segment' }, ratings: { $sum: '$ratings' }}},
-    { $match: { ratings: { $gte: 50 } }},
+    { $match: { ratings: { $lt: 50 } }},
     { $group: { _id: '$_id.segment', count: { $sum: 1 } }} ]).exec(callback);
 }
 
