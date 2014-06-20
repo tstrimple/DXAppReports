@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  h1 #{name}
+  each day in ratingHistory
+    div #{day._id}
+      each region in day.regions
+        div #{region._id}: #{region.ratings}

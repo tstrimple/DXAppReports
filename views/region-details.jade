@@ -1,0 +1,42 @@
+extends layout
+
+block content
+  h1 #{segment} client apps
+  table.table.table-hover.table-condensed
+    tr
+      th Name
+      th Ratings
+      th Change
+      th
+      th
+    each app in apps
+      if app._id.platform == 'client'
+        - var status = (app.ratings >= 50 ? 'success' : 'danger');
+        - var message = (app.ratings >= 50 ? 'win!' : '');
+        tr.tt(data-toggle='tooltip', data-placement='bottom', title=app.breakdown.join('\n'))
+          td #{app._id.name}
+          td #{app.ratings}
+          td 0
+          td
+            a(href=app.storeUrl, target='_BLANK') view in store
+          td(class=status) #{message}
+
+  h1 #{segment} phone apps
+  table.table.table-hover.table-condensed
+    tr
+      th Name
+      th Ratings
+      th Change
+      th
+      th
+    each app in apps
+      if app._id.platform == 'phone'
+        - var status = (app.ratings >= 50 ? 'success' : 'danger');
+        - var message = (app.ratings >= 50 ? 'win!' : '');
+        tr.tt(data-toggle='tooltip', data-placement='top', title=app.breakdown.join('\n'))
+          td #{app._id.name}
+          td #{app.ratings}
+          td 0
+          td
+            a(href=app.storeUrl, target='_BLANK') view in store
+          td(class=status) #{message}
