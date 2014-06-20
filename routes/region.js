@@ -1,5 +1,5 @@
-var StoreRating = require('../models/store-rating');
-var App = require('../models/master-app');
+var StoreRating = require('../models/rating');
+var App = require('../models/app');
 var debug = require('debug')('appreports:region');
 var ratings = require('../crawler/ratings');
 var crawler = require('../crawler/');

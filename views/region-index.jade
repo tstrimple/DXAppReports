@@ -1,7 +1,8 @@
 extends layout
 
 block content
-  h1 us overview
+  .page-header
+    h1 us overview
   table.table.table-condensed.table-hover
     tr
       th
@@ -17,9 +18,9 @@ block content
       td= pendingApps.central
       td= pendingApps.east
       td= pendingApps.pubsec
-  hr
 
-  h1 us client apps
+  .page-header
+    h1 us client apps
   table.table.table-hover.table-condensed
     tr
       th Name
@@ -41,8 +42,8 @@ block content
           td
             a(href=app._id.bitly || app._id.storeUrl, target='_BLANK') view in store
           td(class=status) #{message}
-
-  h1 us phone apps
+  .page-header
+    h1 us phone apps
   table.table.table-hover.table-condensed
     tr
       th Name

@@ -6,6 +6,7 @@ var path = require('path');
 var app = express();
 var debug = require('debug')('appreports');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 if(!process.env.MONGO_URI) {
 	throw 'Must set MONGO_URI environment variable';
@@ -20,16 +21,9 @@ ratings.processStoreLinks(function() {
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(app.router);
+app.use(bodyParser.urlencoded())
+app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'public')));
-
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
 
 app.get('/', region.list);
 app.get('/region/:segment', region.details);

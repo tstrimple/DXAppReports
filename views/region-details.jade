@@ -1,7 +1,8 @@
 extends layout
 
 block content
-  h1 #{segment} client apps
+  .page-header
+    h1 #{segment} client apps
   table.table.table-hover.table-condensed
     tr
       th Name
@@ -21,8 +22,8 @@ block content
           td
             a(href=app._id.bitly || app._id.storeUrl, target='_BLANK') view in store
           td(class=status) #{message}
-
-  h1 #{segment} phone apps
+  .page-header
+    h1 #{segment} phone apps
   table.table.table-hover.table-condensed
     tr
       th Name
