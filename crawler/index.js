@@ -35,7 +35,7 @@ exports.fetchAppRating = function(url, callback) {
         rating = rating.split(' ')[0];
       }
     }
-
+    rating = rating.replace(',', '');
     rating = parseInt(rating);
     return callback(null, isNaN(rating) ? 0 : rating);
   });

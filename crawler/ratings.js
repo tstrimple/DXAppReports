@@ -44,6 +44,7 @@ function processStoreLinks(storeId, done) {
           doc.platform = storeLink.platform;
           doc.url = storeLink.url;
           doc.bitly = storeLink.bitly;
+          doc.baseline = storeLink.baseline;
           debug('updating ratings', count, max);
           doc.save();
           return next();

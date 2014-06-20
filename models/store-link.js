@@ -11,7 +11,8 @@ var schema = new Schema({
   region: String,
   segment: String,
   status: String,
-  processedAt: Date
+  processedAt: Date,
+  baseline: Number
 });
 
 schema.statics.upsert = function() {

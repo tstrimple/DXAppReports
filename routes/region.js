@@ -30,6 +30,11 @@ exports.details = function(req, res) {
     async.each(details, function(app, next) {
       App.getRatingChange(app._id.storeId, function(err, change) {
         app.change = change;
+        console.log('baseline', app._id.baseline);
+        if(app._id.baseline > 0) {
+          app.ratings = app.ratings - app._id.baseline;
+          app.breakdown = [];
+        }
         next();
       });
     }, function(err) {
@@ -43,6 +48,7 @@ exports.doUpdate = function(req, res) {
   var segment = req.body.segment;
   var name = req.body.name;
   var bitly = req.body.bitly;
+  var baseline = req.body.baseline;
   if(!storeId || !segment) {
     debug('cannot update', storeId, segment);
     return res.redirect('back');
@@ -55,6 +61,7 @@ exports.doUpdate = function(req, res) {
     app.segment = segment;
     app.name = name;
     app.bitly = bitly;
+    app.baseline = baseline;
 
     app.save(function() {
       debug('expanding new storelinks');

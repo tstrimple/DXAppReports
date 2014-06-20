@@ -14,7 +14,8 @@ var schema = new Schema({
   date:  Number,
   segment: String,
   region: String,
-  ratings: Number
+  ratings: Number,
+  baseline: Number
 });
 
 schema.statics.today = function() {
@@ -29,8 +30,8 @@ schema.statics.appsNeedingRatings = function(callback) {
   var date = this.today();
   this.aggregate([
     { $match: { date: date }},
-    { $group: { _id: { storeId: '$storeId', segment: '$segment' }, ratings: { $sum: '$ratings' }}},
-    { $match: { ratings: { $gte: 50 } }},
+    { $group: { _id: { storeId: '$storeId', segment: '$segment', baseline: '$baseline' }, ratings: { $sum: '$ratings' }}},
+    { $match: { ratings: { $gte: { $add: [50, '$_id.baseline'] } }}},
     { $group: { _id: '$_id.segment', count: { $sum: 1 } }} ]).exec(callback);
 }
 
@@ -40,7 +41,7 @@ schema.statics.getDetailsForSegment = function(segment, callback) {
   this.aggregate([
     { $match: { segment: segment, date: date } },
     { $group: {
-      _id: { platform: '$platform', name: '$name', storeId: '$storeId', storeUrl: '$primaryUrl', bitly: '$bitly' },
+      _id: { platform: '$platform', name: '$name', storeId: '$storeId', storeUrl: '$primaryUrl', bitly: '$bitly', baseline: '$baseline' },
       ratings: { $sum: '$ratings' },
       breakdown: {
         $push: {

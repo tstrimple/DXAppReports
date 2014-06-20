@@ -18,7 +18,8 @@ var schema = new Schema({
   bitly: String,
   formatUrl: String,
   platform: String,
-  segment: String
+  segment: String,
+  baseline: Number
 });
 
 schema.methods.expandStoreLinks = function(done) {
@@ -40,6 +41,7 @@ schema.methods.expandStoreLinks = function(done) {
         doc.primaryUrl = this.primaryUrl;
         doc.url = url;
         doc.bitly = this.bitly;
+        doc.baseline = this.baseline;
 
         debug('upserting StoreLink', doc);
         doc.save();
