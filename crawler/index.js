@@ -14,8 +14,8 @@ function parseAppName(body) {
 }
 
 exports.getStatus = function(url, callback) {
-  debug('getting status for', url);
   request({ url: url, followRedirect: false }, function(err, res) {
+    debug(res.statusCode, res.headers.location);
     return callback(res.statusCode);
   });
 }
