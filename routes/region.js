@@ -15,7 +15,22 @@ exports.list = function(req, res) {
       n();
     }, function(err) {
       segments['us'] = total;
-      res.render('region-index', { pendingApps: segments });
+
+      StoreRating.getDetails(function(err, details) {
+        async.each(details, function(app, next) {
+          App.getRatingChange(app._id.storeId, function(err, change) {
+            app.change = change;
+            if(app._id.baseline > 0) {
+              app.ratings = app.ratings - app._id.baseline;
+              app.breakdown = [];
+            }
+            next();
+          });
+        }, function(err) {
+          res.render('region-index', { apps: details, pendingApps: segments });
+        });
+      });
+
     });
   });
 };

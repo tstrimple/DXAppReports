@@ -17,3 +17,50 @@ block content
       td= pendingApps.central
       td= pendingApps.east
       td= pendingApps.pubsec
+  hr
+
+  h1 us client apps
+  table.table.table-hover.table-condensed
+    tr
+      th Name
+      th Region
+      th Ratings
+      th Change
+      th
+      th
+    each app in apps
+      if app._id.platform == 'client'
+        - var status = (app.ratings >= 50 ? 'success' : 'danger');
+        - var message = (app.ratings >= 50 ? 'win!' : '');
+        tr.tt(data-toggle='tooltip', data-placement='bottom', title=app.breakdown.join('\n'))
+          td
+            a(href='/update/' + app._id.storeId) #{app._id.name}
+          td #{app._id.segment}
+          td #{app.ratings}
+          td #{app.change}
+          td
+            a(href=app._id.bitly || app._id.storeUrl, target='_BLANK') view in store
+          td(class=status) #{message}
+
+  h1 us phone apps
+  table.table.table-hover.table-condensed
+    tr
+      th Name
+      th Region
+      th Ratings
+      th Change
+      th
+      th
+    each app in apps
+      if app._id.platform == 'phone'
+        - var status = (app.ratings >= 50 ? 'success' : 'danger');
+        - var message = (app.ratings >= 50 ? 'win!' : '');
+        tr.tt(data-toggle='tooltip', data-placement='top', title=app.breakdown.join('\n'))
+          td
+            a(href='/update/' + app._id.storeId) #{app._id.name}
+          td #{app._id.segment}
+          td #{app.ratings}
+          td #{app.change}
+          td
+            a(href=app._id.bitly || app._id.storeUrl, target='_BLANK') view in store
+          td(class=status) #{message}

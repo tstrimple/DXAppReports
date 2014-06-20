@@ -35,6 +35,25 @@ schema.statics.appsNeedingRatings = function(callback) {
     { $group: { _id: '$_id.segment', count: { $sum: 1 } }} ]).exec(callback);
 }
 
+schema.statics.getDetails = function(callback) {
+  var date = this.today();
+  debug('getting details');
+  this.aggregate([
+    { $match: { date: date } },
+    { $group: {
+      _id: { platform: '$platform', name: '$name', storeId: '$storeId', storeUrl: '$primaryUrl', bitly: '$bitly', baseline: '$baseline', segment: '$segment' },
+      ratings: { $sum: '$ratings' },
+      breakdown: {
+        $push: {
+          $concat: ['$region', ': ',  { $substr: [ '$ratings', 0, 3 ]}]}
+        }
+      }
+    },
+    { $sort: { ratings: 1 } }
+  ]).exec(callback);
+};
+
+
 schema.statics.getDetailsForSegment = function(segment, callback) {
   var date = this.today();
   debug('getting details for segment', segment);
