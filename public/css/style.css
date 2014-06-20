@@ -17,3 +17,7 @@ div.tooltip {
 	white-space:pre-wrap;
 	text-align: left;
 }
+
+#update {
+  max-width: 240px;
+}

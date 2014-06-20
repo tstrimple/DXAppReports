@@ -15,6 +15,7 @@ var schema = new Schema({
   name: String,
   image: String,
   primaryUrl: String,
+  bitly: String,
   formatUrl: String,
   platform: String,
   segment: String
@@ -27,9 +28,6 @@ schema.methods.expandStoreLinks = function(done) {
     crawler.getStatus(url, function(status) {
       var data = {
         storeId: this.storeId,
-        platform: this.platform,
-        primaryUrl: this.primaryUrl,
-        url: url,
         region: region
       };
 
@@ -38,6 +36,11 @@ schema.methods.expandStoreLinks = function(done) {
         doc.name = this.name;
         doc.segment = this.segment;
         doc.processedAt = moment().tz('America/Los_Angeles').toDate();
+        doc.platform = this.platform;
+        doc.primaryUrl = this.primaryUrl;
+        doc.url = url;
+        doc.bitly = this.bitly;
+
         debug('upserting StoreLink', doc);
         doc.save();
         nextRegion();

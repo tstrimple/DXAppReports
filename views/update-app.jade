@@ -1,13 +1,19 @@
 extends layout
 
 block content
-  h1 update app
-  form(action='', method='post')
+  h1 update app #{name}
+  form#update(action='', method='post')
     .form-group
-      label(for='segment')
-      select#segment(name='segment')
+      label(for='name') name
+      input.form-control#name(type='text', name='name', value=name)
+    .form-group
+      label(for='segment') region
+      select.form-control#segment(name='segment')
         option(value='west') west
         option(value='central') central
         option(value='east') east
         option(value='pubsec') pubsec
+    .form-group
+      label(for='bitly') bit.ly link
+      input.form-control#bitly(type='text', name='bitly', value=bitly)
     button.btn.btn-default(type='submit') save app

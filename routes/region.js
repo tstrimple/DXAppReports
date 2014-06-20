@@ -23,6 +23,8 @@ exports.details = function(req, res) {
 exports.doUpdate = function(req, res) {
   var storeId = req.params.storeId;
   var segment = req.body.segment;
+  var name = req.body.name;
+  var bitly = req.body.bitly;
   if(!storeId || !segment) {
     debug('cannot update', storeId, segment);
     return res.redirect('back');
@@ -33,6 +35,9 @@ exports.doUpdate = function(req, res) {
       return res.redirect('back');
     }
     app.segment = segment;
+    app.name = name;
+    app.bitly = bitly;
+
     app.save(function() {
       debug('expanding new storelinks');
       app.expandStoreLinks(function() {

@@ -33,16 +33,17 @@ function processStoreLinks(storeId, done) {
         var data = {
           storeId: storeLink.storeId,
           date: StoreRating.today(),
-          region: storeLink.region,
-          name: storeLink.name,
-          platform: storeLink.platform,
-          url: storeLink.url
+          region: storeLink.region
         };
 
         StoreRating.findOneAndUpdate(data, data, { upsert: true }, function(err, doc) {
           doc.primaryUrl = storeLink.primaryUrl;
           doc.ratings = ratings;
+          doc.name = storeLink.name;
           doc.segment = storeLink.segment;
+          doc.platform = storeLink.platform;
+          doc.url = storeLink.url;
+          doc.bitly = storeLink.bitly;
           if(doc.name == 'Viggle') {
             debug('wtv?', doc);
           }

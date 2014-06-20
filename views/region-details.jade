@@ -14,11 +14,12 @@ block content
         - var status = (app.ratings >= 50 ? 'success' : 'danger');
         - var message = (app.ratings >= 50 ? 'win!' : '');
         tr.tt(data-toggle='tooltip', data-placement='bottom', title=app.breakdown.join('\n'))
-          td #{app._id.name}
+          td
+            a(href='/update/' + app._id.storeId) #{app._id.name}
           td #{app.ratings}
           td 0
           td
-            a(href=app.storeUrl, target='_BLANK') view in store
+            a(href=app._id.bitly || app._id.storeUrl, target='_BLANK') view in store
           td(class=status) #{message}
 
   h1 #{segment} phone apps
@@ -38,5 +39,5 @@ block content
           td #{app.ratings}
           td 0
           td
-            a(href=app.storeUrl, target='_BLANK') view in store
+            a(href=app._id.bitly || app.storeUrl, target='_BLANK') view in store
           td(class=status) #{message}

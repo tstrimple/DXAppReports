@@ -8,6 +8,7 @@ var schema = new Schema({
   storeId: String,
   name: String,
   platform: String,
+  bitly: String,
   primaryUrl: String,
   url: String,
   date:  Number,
@@ -30,9 +31,8 @@ schema.statics.getDetailsForSegment = function(segment, callback) {
   this.aggregate([
     { $match: { segment: segment, date: date } },
     { $group: {
-      _id: { platform: '$platform', name: '$name' },
+      _id: { platform: '$platform', name: '$name', storeId: '$storeId', storeUrl: '$primaryUrl', bitly: '$bitly' },
       ratings: { $sum: '$ratings' },
-      storeUrl: { $first: '$primaryUrl' },
       breakdown: {
         $push: {
           $concat: ['$region', ': ',  { $substr: [ '$ratings', 0, 3 ]}]}

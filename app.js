@@ -1,5 +1,4 @@
 var express = require('express');
-var apps = require('./routes/');
 var region = require('./routes/region');
 var ratings = require('./crawler/ratings');
 var http = require('http');

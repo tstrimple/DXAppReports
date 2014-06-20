@@ -5,6 +5,7 @@ var schema = new Schema({
   storeId: String,
   name: String,
   platform: String,
+  bitly: String,
   primaryUrl: String,
   url: String,
   region: String,
