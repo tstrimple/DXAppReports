@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1 update app
+  form(action='', method='post')
+    .form-group
+      label(for='segment')
+      select#segment(name='segment')
+        option(value='west') west
+        option(value='central') central
+        option(value='east') east
+        option(value='pubsec') pubsec
+    button.btn.btn-default(type='submit') save app

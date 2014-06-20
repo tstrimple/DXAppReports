@@ -27,20 +27,21 @@ schema.methods.expandStoreLinks = function(done) {
     crawler.getStatus(url, function(status) {
       var data = {
         storeId: this.storeId,
-        name: this.name,
         platform: this.platform,
         primaryUrl: this.primaryUrl,
         url: url,
-        region: region,
-        segment: this.segment };
+        region: region
+      };
 
       StoreLink.findOneAndUpdate(data, data, { upsert: true }, function(err, doc) {
         doc.status = status;
+        doc.name = this.name;
+        doc.segment = this.segment;
         doc.processedAt = moment().tz('America/Los_Angeles').toDate();
         debug('upserting StoreLink', doc);
         doc.save();
         nextRegion();
-      });
+      }.bind(this));
     }.bind(this));
   }.bind(this), done);
 }

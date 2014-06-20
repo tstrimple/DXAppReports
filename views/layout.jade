@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title= title
+    title #{segment} app reports
     link(rel='stylesheet', href='/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/style.css')
   body
@@ -27,6 +27,10 @@ html
               a( href = '/region/east' ) east
             li( class = segment === 'pubsec' ? 'active' : '' )
               a( href = '/region/pubsec' ) pubsec
+          form.navbar-form.navbar-right(action='/add', method='post')
+            .form-group
+              input.form-control(type='text', name='storeUrl', placeholder='store url')
+            button.btn.btn-default(type='submit') add app
     block content
     script(src='//code.jquery.com/jquery.js')
     script(src='/js/bootstrap.min.js')
