@@ -25,6 +25,15 @@ schema.statics.yesterday = function() {
   return this.today() - 1;
 }
 
+schema.statics.appsNeedingRatings = function(callback) {
+  var date = this.today();
+  this.aggregate([
+    { $match: { date: date }},
+    { $group: { _id: { storeId: '$storeId', segment: '$segment' }, ratings: { $sum: '$ratings' }}},
+    { $match: { ratings: { $gte: 50 } }},
+    { $group: { _id: '$_id.segment', count: { $sum: 1 } }} ]).exec(callback);
+}
+
 schema.statics.getDetailsForSegment = function(segment, callback) {
   var date = this.today();
   debug('getting details for segment', segment);

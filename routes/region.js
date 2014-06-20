@@ -6,8 +6,18 @@ var crawler = require('../crawler/');
 var async = require('async');
 
 exports.list = function(req, res) {
-  //  aggregate ratings by region
-  res.render('region-index', {});
+  StoreRating.appsNeedingRatings(function(err, data) {
+    var segments = {};
+    var total = 0;
+    async.each(data, function(d, n) {
+      segments[d._id] = d.count;
+      total += d.count;
+      n();
+    }, function(err) {
+      segments['us'] = total;
+      res.render('region-index', { pendingApps: segments });
+    });
+  });
 };
 
 exports.details = function(req, res) {

@@ -2,3 +2,18 @@ extends layout
 
 block content
   h1 us overview
+  table.table.table-condensed.table-hover
+    tr
+      th
+      th us
+      th west
+      th central
+      th east
+      th pubsec
+    tr
+      td apps pending ratings
+      td= pendingApps.us
+      td= pendingApps.west
+      td= pendingApps.central
+      td= pendingApps.east
+      td= pendingApps.pubsec

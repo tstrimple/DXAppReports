@@ -44,9 +44,6 @@ function processStoreLinks(storeId, done) {
           doc.platform = storeLink.platform;
           doc.url = storeLink.url;
           doc.bitly = storeLink.bitly;
-          if(doc.name == 'Viggle') {
-            debug('wtv?', doc);
-          }
           debug('updating ratings', count, max);
           doc.save();
           return next();
