@@ -30,7 +30,6 @@ exports.details = function(req, res) {
     async.each(details, function(app, next) {
       App.getRatingChange(app._id.storeId, function(err, change) {
         app.change = change;
-        console.log('baseline', app._id.baseline);
         if(app._id.baseline > 0) {
           app.ratings = app.ratings - app._id.baseline;
           app.breakdown = [];
