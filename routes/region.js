@@ -3,6 +3,7 @@ var App = require('../models/master-app');
 var debug = require('debug')('appreports:region');
 var ratings = require('../crawler/ratings');
 var crawler = require('../crawler/');
+var async = require('async');
 
 exports.list = function(req, res) {
   //  aggregate ratings by region
@@ -16,7 +17,14 @@ exports.details = function(req, res) {
   }
 
   StoreRating.getDetailsForSegment(segment, function(err, details) {
-    res.render('region-details', { segment: segment, apps: details });
+    async.each(details, function(app, next) {
+      App.getRatingChange(app._id.storeId, function(err, change) {
+        app.change = change;
+        next();
+      });
+    }, function(err) {
+      res.render('region-details', { segment: segment, apps: details });
+    });
   });
 };
 

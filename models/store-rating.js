@@ -43,13 +43,33 @@ schema.statics.getDetailsForSegment = function(segment, callback) {
   ]).exec(callback);
 };
 
+schema.statics.getChange = function(storeId, done) {
+  var today = this.today();
+  var yesterday = this.yesterday();
+  db.storeratings.aggregate({
+    $match: {
+      storeId: storeId,
+      $or: [
+      { date: today },
+      { date: yesterday } ] } },
+    { $group: { _id: '$date', ratings: { $sum: '$ratings' } } }).exec(function(err, data) {
+      if(data.length == 2) {
+        return done(data[0] - data[1]);
+      }
+
+      return done(0);
+    });
+};
+
 schema.statics.getForDate = function(storeId, date, callback) {
   date = date || this.today();
+  debug('getting', storeId, date);
 
   this.aggregate([
     { $match: { storeId: storeId, date: date }},
-    { $group: { _id: '$date', totalRatings: { $sum: '$ratings' }, regionBreakdown: { $push: { region: '$region', ratings: '$ratings'} }}}
+    { $group: { _id: '$date', totalRatings: { $sum: '$ratings' }}}
   ]).exec(function(err, days) {
+    debug('getting for date', days);
     if(days.length > 0) {
       return callback(null, days[0]);
     }

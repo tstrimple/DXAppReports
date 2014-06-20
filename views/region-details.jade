@@ -17,7 +17,7 @@ block content
           td
             a(href='/update/' + app._id.storeId) #{app._id.name}
           td #{app.ratings}
-          td 0
+          td #{app.change}
           td
             a(href=app._id.bitly || app._id.storeUrl, target='_BLANK') view in store
           td(class=status) #{message}
@@ -38,7 +38,7 @@ block content
           td
             a(href='/update/' + app._id.storeId) #{app._id.name}
           td #{app.ratings}
-          td 0
+          td #{app.change}
           td
             a(href=app._id.bitly || app.storeUrl, target='_BLANK') view in store
           td(class=status) #{message}

@@ -80,20 +80,21 @@ schema.methods.getUrl = function(region) {
 	return util.format(this.formatUrl, region);
 }
 
-schema.methods.getRatingsForYesterday = function(callback) {
-  StoreRating.getForDate(this.storeId, StoreRating.yesterday(), callback);
+schema.statics.getRatingsForYesterday = function(storeId, callback) {
+  StoreRating.getForDate(storeId, StoreRating.yesterday(), callback);
 }
 
-schema.methods.getRatingsForToday = function(callback) {
-  StoreRating.getForDate(this.storeId, StoreRating.today(), callback);
+schema.statics.getRatingsForToday = function(storeId, callback) {
+  StoreRating.getForDate(storeId, StoreRating.today(), callback);
 }
 
-schema.methods.getRatingChange = function(callback) {
-  this.getRatingsForToday(function(err, today) {
-    this.getRatingsForYesterday(function(err, yesterday) {
+schema.statics.getRatingChange = function(storeId, callback) {
+  this.getRatingsForToday(storeId, function(err, today) {
+    this.getRatingsForYesterday(storeId, function(err, yesterday) {
+      debug('icanhaschange?', today, yesterday);
       callback(err, today.totalRatings - yesterday.totalRatings);
     });
-  });
+  }.bind(this));
 }
 
 module.exports = mongoose.model('App', schema);
