@@ -5,6 +5,28 @@ html
     link(rel='stylesheet', href='/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/style.css')
   body
+    nav.navbar.navbar-default(role = 'navigation')
+      .container-fluid
+        .navbar-header
+          button.navbar-toggle( data-toggle='collapse' data-target='#navigation' )
+            span.sr-only toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand App Reporting
+        #navigation.collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li( class = segment ? '' : 'active' )
+              a( href = '/' ) us
+            li.divider &nbsp;
+            li( class = segment === 'west' ? 'active' : '' )
+              a( href = '/region/west' ) west
+            li( class = segment === 'central' ? 'active' : '' )
+              a( href = '/region/central' ) central
+            li( class = segment === 'east' ? 'active' : '' )
+              a( href = '/region/east' ) east
+            li( class = segment === 'pubsec' ? 'active' : '' )
+              a( href = '/region/pubsec' ) pubsec
     block content
     script(src='//code.jquery.com/jquery.js')
     script(src='/js/bootstrap.min.js')
