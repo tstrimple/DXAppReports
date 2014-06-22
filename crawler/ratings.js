@@ -27,9 +27,7 @@ function processStoreLinks(storeId, done) {
       crawler.fetchAppRating(storeLink.url, function(err, ratings) {
         storeLink.processedAt = moment().tz('America/Los_Angeles').toDate();
         storeLink.save();
-        if(ratings === 0) {
-          return next();
-        }
+
         var data = {
           storeId: storeLink.storeId,
           date: StoreRating.today(),
