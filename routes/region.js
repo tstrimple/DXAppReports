@@ -81,7 +81,7 @@ exports.doUpdate = function(req, res) {
       debug('expanding new storelinks');
       app.expandStoreLinks(function() {
         debug('fetching new storeratings');
-        ratings.processStoreLinks(app.storeId, function() {
+        ratings.processStoreLinks({ storeId: app.storeId }, function() {
           res.redirect('/region/' + segment);
         });
       });

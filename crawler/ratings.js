@@ -15,7 +15,7 @@ function processStoreLinks(options, done) {
 
   var query = { status: '200' };
   if(options.storeId) {
-    query.storeId = storeId;
+    query.storeId = options.storeId;
   }
 
   var stream = StoreLink.find(query).sort({ processedAt: 1 }).limit(options.limit || 0).exec(function(err, storeLinks) {
