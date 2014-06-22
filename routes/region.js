@@ -100,6 +100,17 @@ exports.update = function(req, res) {
   });
 };
 
+exports.sync = function(req, res) {
+  var options = {
+    limit: req.query.limit,
+    storeId: req.query.storeId
+  };
+
+  ratings.processStoreLinks(options, function() {
+    res.send('done');
+  });
+};
+
 exports.add = function(req, res) {
   debug('trying add', req.body);
   var storeUrl = req.body.storeUrl;

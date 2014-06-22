@@ -13,16 +13,11 @@ if(!process.env.MONGO_URI) {
 }
 mongoose.connect(process.env.MONGO_URI);
 
-ratings.processStoreLinks(function() {
-  debug('done processing store links. Starting timer');
-  setTimeout(ratings.processStoreLinks, 600000);
-});
-
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(bodyParser.urlencoded())
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', region.list);
@@ -30,6 +25,7 @@ app.get('/region/:segment', region.details);
 app.post('/add', region.add);
 app.get('/update/:storeId', region.update);
 app.post('/update/:storeId', region.doUpdate);
+app.get('/sync', region.sync);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
