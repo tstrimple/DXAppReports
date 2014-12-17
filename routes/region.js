@@ -6,53 +6,16 @@ var crawler = require('../crawler/');
 var async = require('async');
 
 exports.list = function(req, res) {
-  StoreRating.appsNeedingRatings(function(err, data) {
-    var segments = {};
-    var total = 0;
-    async.each(data, function(d, n) {
-      segments[d._id] = d.count;
-      total += d.count;
-      n();
-    }, function(err) {
-      segments['us'] = total;
-
-      StoreRating.getDetails(function(err, details) {
-        async.each(details, function(app, next) {
-          App.getRatingChange(app._id.storeId, function(err, change) {
-            app.change = change;
-            if(app._id.baseline > 0) {
-              app.ratings = app.ratings - app._id.baseline;
-              app.breakdown = [];
-            }
-            next();
-          });
-        }, function(err) {
-          res.render('region-index', { apps: details, pendingApps: segments });
-        });
-      });
-
-    });
+  StoreRating.getList(function(err, details) {
+    debug('got list');
+    res.render('list', { apps: details });
   });
 };
 
 exports.details = function(req, res) {
-  var segment = req.params.segment;
-  if(!segment) {
-    return res.redirect('/');
-  }
-
-  StoreRating.getDetailsForSegment(segment, function(err, details) {
-    async.each(details, function(app, next) {
-      App.getRatingChange(app._id.storeId, function(err, change) {
-        app.change = change;
-        if(app._id.baseline > 0) {
-          app.ratings = app.ratings - app._id.baseline;
-          app.breakdown = [];
-        }
-        next();
-      });
-    }, function(err) {
-      res.render('region-details', { segment: segment, apps: details });
+  App.findOne({ storeId: req.params.storeId }, function(err, app) {
+    StoreRating.getDetails(req.params.storeId, function(err, regions) {
+      res.render('details', { app: app, regions: regions });
     });
   });
 };
@@ -82,7 +45,7 @@ exports.doUpdate = function(req, res) {
       app.expandStoreLinks(function() {
         debug('fetching new storeratings');
         ratings.processStoreLinks({ storeId: app.storeId }, function() {
-          res.redirect('/region/' + segment);
+          res.redirect('/');
         });
       });
     });
@@ -130,7 +93,13 @@ exports.add = function(req, res) {
       app.name = details.name;
       debug('saving new app');
       app.save(function() {
-        res.redirect('/update/' + app.storeId);
+        debug('expanding storelinks');
+        app.expandStoreLinks(function() {
+          debug('fetching new storeratings');
+          ratings.processStoreLinks({ storeId: app.storeId }, function() {
+            res.redirect('/');
+          });
+        });
       });
     });
   });

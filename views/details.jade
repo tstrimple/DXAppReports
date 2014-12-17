@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  .page-header
+    h1 #{app.name} breakdown
+  table.table.table-hover.table-condensed
+    tr
+      th Region
+      th Total Ratings
+      th Average Rating
+      th
+    each region in regions
+      tr.tt()
+        td #{region.region}
+        td #{region.ratingCount}
+        td #{Math.floor(region.ratingAverage * 10) / 10}
+        td
+          a(href=region.url, target='_BLANK') view in regional store

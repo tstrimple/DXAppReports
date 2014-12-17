@@ -12,9 +12,10 @@ var schema = new Schema({
   primaryUrl: String,
   url: String,
   date:  Number,
-  segment: String,
   region: String,
-  ratings: Number,
+  ratingCount: Number,
+  ratingAverage: Number,
+  ratingTotal: Number,
   baseline: Number
 });
 
@@ -26,51 +27,39 @@ schema.statics.yesterday = function() {
   return this.today() - 1;
 }
 
-schema.statics.appsNeedingRatings = function(callback) {
+schema.statics.getList = function(callback) {
   var date = this.today();
+  debug('getting list');
   this.aggregate([
-    { $match: { date: date, ratings: { $gt: 0 } }},
-    { $group: { _id: { storeId: '$storeId', segment: '$segment' }, ratings: { $sum: '$ratings' }}},
-    { $match: { ratings: { $lt: 50 } }},
-    { $group: { _id: '$_id.segment', count: { $sum: 1 } }} ]).exec(callback);
-}
+    { $match: { date: date }},
+    { $group: {
+      _id: { platform: '$platform', name: '$name', storeId: '$storeId', storeUrl: '$primaryUrl', bitly: '$bitly', baseline: '$baseline' },
+      ratings: { $sum: '$ratingCount' },
+      total: { $sum: '$ratingTotal' }
+    }},
+    { $sort: { ratings: -1 } }
+  ]).exec(callback);
+};
 
-schema.statics.getDetails = function(callback) {
+schema.statics.getDetails = function(storeId, callback) {
   var date = this.today();
   debug('getting details');
   this.aggregate([
-    { $match: { date: date, ratings: { $gt: 0 } }},
-    { $group: {
-      _id: { platform: '$platform', name: '$name', storeId: '$storeId', storeUrl: '$primaryUrl', bitly: '$bitly', baseline: '$baseline', segment: '$segment' },
-      ratings: { $sum: '$ratings' },
-      breakdown: {
-        $push: {
-          $concat: ['$region', ': ',  { $substr: [ '$ratings', 0, 3 ]}]}
-        }
-      }
-    },
-    { $sort: { ratings: 1 } }
+    { $match: { date: date, ratingCount: { $gt: 0 }, storeId: storeId }},
+    { $sort: { ratingCount: -1 } }
   ]).exec(callback);
 };
 
 
-schema.statics.getDetailsForSegment = function(segment, callback) {
+schema.statics.getRegions = function(storeId, callback) {
   var date = this.today();
-  debug('getting details for segment', segment);
+  debug('getting details');
   this.aggregate([
-    { $match: { segment: segment, date: date, ratings: { $gt: 0 } } },
-    { $group: {
-      _id: { platform: '$platform', name: '$name', storeId: '$storeId', storeUrl: '$primaryUrl', bitly: '$bitly', baseline: '$baseline' },
-      ratings: { $sum: '$ratings' },
-      breakdown: {
-        $push: {
-          $concat: ['$region', ': ',  { $substr: [ '$ratings', 0, 3 ]}]}
-        }
-      }
-    },
-    { $sort: { ratings: 1 } }
+    { $match: { date: date, ratingCount: { $gt: 0 }, storeId: storeId }},
+    { $sort: { ratingCount: -1 } }
   ]).exec(callback);
 };
+
 
 schema.statics.getChange = function(storeId, done) {
   var today = this.today();

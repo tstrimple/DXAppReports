@@ -12,6 +12,7 @@ if(!process.env.MONGO_URI) {
 	throw 'Must set MONGO_URI environment variable';
 }
 mongoose.connect(process.env.MONGO_URI);
+mongoose.set('debug', true);
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
@@ -21,7 +22,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', region.list);
-app.get('/region/:segment', region.details);
+app.get('/details/:storeId', region.details);
 app.post('/add', region.add);
 app.get('/update/:storeId', region.update);
 app.post('/update/:storeId', region.doUpdate);

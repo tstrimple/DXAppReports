@@ -17,7 +17,6 @@ var schema = new Schema({
   bitly: String,
   formatUrl: String,
   platform: String,
-  segment: String,
   baseline: Number
 });
 
@@ -31,10 +30,13 @@ schema.methods.expandStoreLinks = function(done) {
         region: region
       };
 
-      StoreLink.findOneAndUpdate(data, data, { upsert: true }, function(err, doc) {
+      StoreLink.findOne(data, data, { 'new': true, upsert: true }, function(err, doc) {
+        if(!doc) {
+          doc = new StoreLink(data);
+        }
+
         doc.status = status;
         doc.name = this.name;
-        doc.segment = this.segment;
         doc.processedAt = moment().tz('America/Los_Angeles').toDate();
         doc.platform = this.platform;
         doc.primaryUrl = this.primaryUrl;

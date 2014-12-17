@@ -7,16 +7,6 @@ block content
       label(for='name') name
       input.form-control#name(type='text', name='name', value=name)
     .form-group
-      label(for='segment') region
-      select.form-control#segment(name='segment')
-        option(value='west') west
-        option(value='central') central
-        option(value='east') east
-        option(value='pubsec') pubsec
-    .form-group
-      label(for='bitly') bit.ly link
-      input.form-control#bitly(type='text', name='bitly', value=bitly)
-    .form-group
       label(for='baseline') baseline
       input.form-control#baseline(type='text', name='baseline', value=baseline || 0)
     button.btn.btn-default(type='submit') save app

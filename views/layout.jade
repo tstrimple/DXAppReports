@@ -16,17 +16,6 @@ html
           a.navbar-brand App Reporting
         #navigation.collapse.navbar-collapse
           ul.nav.navbar-nav
-            li( class = segment ? '' : 'active' )
-              a( href = '/' ) us
-            li.divider &nbsp;
-            li( class = segment === 'west' ? 'active' : '' )
-              a( href = '/region/west' ) west
-            li( class = segment === 'central' ? 'active' : '' )
-              a( href = '/region/central' ) central
-            li( class = segment === 'east' ? 'active' : '' )
-              a( href = '/region/east' ) east
-            li( class = segment === 'pubsec' ? 'active' : '' )
-              a( href = '/region/pubsec' ) pubsec
           form.navbar-form.navbar-right(action='/add', method='post')
             .form-group
               input.form-control(type='text', name='storeUrl', placeholder='store url')

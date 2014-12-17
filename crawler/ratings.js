@@ -23,10 +23,10 @@ function processStoreLinks(options, done) {
     var max = storeLinks.length;
     debug('processing urls', storeLinks.length);
     async.eachLimit(storeLinks, 20, function(storeLink, next) {
-      crawler.fetchAppRating(storeLink.url, function(err, ratings) {
+      crawler.fetchAppRating(storeLink.url, function(err, ratings, ratingValue) {
         storeLink.processedAt = moment().tz('America/Los_Angeles').toDate();
         storeLink.save();
-        debug('processing', storeLink.url);
+        //debug('processing', storeLink.url);
 
         var data = {
           storeId: storeLink.storeId,
@@ -35,16 +35,21 @@ function processStoreLinks(options, done) {
         };
         count++;
         (function(data, count, next) {
-          StoreRating.findOneAndUpdate(data, data, { upsert: true }, function(err, doc) {
+          StoreRating.findOne(data, data, { upsert: true }, function(err, doc) {
+            if(!doc) {
+              doc = new StoreRating(data);
+            }
+
             doc.primaryUrl = storeLink.primaryUrl;
-            doc.ratings = ratings;
+            doc.ratingCount = ratings;
+            doc.ratingAverage = ratingValue;
+            doc.ratingTotal = ratings * ratingValue;
             doc.name = storeLink.name;
-            doc.segment = storeLink.segment;
             doc.platform = storeLink.platform;
             doc.url = storeLink.url;
             doc.bitly = storeLink.bitly;
             doc.baseline = storeLink.baseline;
-            debug('updating ratings', count, max);
+            debug(doc.region, ratings, ratingValue);
             doc.save();
             return next();
           });
