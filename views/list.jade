@@ -8,6 +8,8 @@ block content
       th Name
       th Total Ratings
       th Average Rating
+      th US Total Ratings
+      th US Average Rating
       th
     each app in apps
       if app._id.platform == 'client'
@@ -18,6 +20,8 @@ block content
             a(href='/details/' + app._id.storeId) #{app._id.name}
           td #{app.ratings}
           td #{app.ratings > 0 ? Math.floor((app.total * 10 / app.ratings))  / 10 : 0}
+          td #{app.usRatingCount}
+          td #{Math.floor(app.usRatingAverage * 10) / 10}
           td
             a(href=app._id.storeUrl, target='_BLANK') view in store
   .page-header
@@ -27,6 +31,8 @@ block content
       th Name
       th Total Ratings
       th Average Rating
+      th US Total Ratings
+      th US Average Rating
       th
     each app in apps
       if app._id.platform == 'phone'
@@ -37,5 +43,7 @@ block content
             a(href='/details/' + app._id.storeId) #{app._id.name}
           td #{app.ratings}
           td #{app.ratings > 0 ? Math.floor((app.total * 10 / app.ratings))  / 10 : 0}
+          td #{app.usRatingCount}
+          td #{Math.floor(app.usRatingAverage * 10) / 10}
           td
             a(href=app._id.storeUrl, target='_BLANK') view in store

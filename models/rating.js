@@ -37,7 +37,7 @@ schema.statics.getList = function(callback) {
       ratings: { $sum: '$ratingCount' },
       total: { $sum: '$ratingTotal' }
     }},
-    { $sort: { ratings: -1 } }
+    { $sort: { ratings: 1 } }
   ]).exec(callback);
 };
 

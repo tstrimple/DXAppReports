@@ -7,8 +7,17 @@ var async = require('async');
 
 exports.list = function(req, res) {
   StoreRating.getList(function(err, details) {
-    debug('got list');
-    res.render('list', { apps: details });
+    async.each(details, function(app, next) {
+      StoreRating.findOne({ storeId: app._id.storeId, date: StoreRating.today(), region: 'en-us' }, function(err, us) {
+        app.usRatingCount = us.ratingCount;
+        app.usRatingAverage = us.ratingAverage;
+        app.usRatingTotal = us.ratingTotal;
+        next();
+      });
+    }, function() {
+      debug('got list');
+      res.render('list', { apps: details });
+    });
   });
 };
 
@@ -43,10 +52,7 @@ exports.doUpdate = function(req, res) {
     app.save(function() {
       debug('expanding new storelinks');
       app.expandStoreLinks(function() {
-        debug('fetching new storeratings');
-        ratings.processStoreLinks({ storeId: app.storeId }, function() {
-          res.redirect('/');
-        });
+        res.redirect('/');
       });
     });
   });

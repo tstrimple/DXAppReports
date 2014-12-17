@@ -22,6 +22,12 @@ var schema = new Schema({
 
 schema.methods.expandStoreLinks = function(done) {
   debug('total regions to verify', regions.length);
+  crawler.fetchAppDetails(this.primaryUrl, function(err, details) {
+    debug('updating name', details.name);
+    this.name = details.name;
+    this.save();
+  }.bind(this));
+
   async.eachLimit(regions, 20, function(region, nextRegion) {
     var url = this.getUrl(region);
     crawler.getStatus(url, function(status) {
