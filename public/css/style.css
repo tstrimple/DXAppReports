@@ -21,3 +21,7 @@ div.tooltip {
 #update {
   max-width: 240px;
 }
+
+.badge {
+  font-size: 0.9em;
+}

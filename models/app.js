@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var moment = require('moment-timezone');
 var util = require('util');
+var AppSummary = require('./app-summary');
 var StoreLink = require('./link');
 var StoreRating = require('./rating');
 var regions = require('../data/regions');
@@ -19,6 +20,71 @@ var schema = new Schema({
   platform: String,
   baseline: Number
 });
+
+schema.methods.rollUp = function(done) {
+  StoreRating.distinct('date', { storeId: this.storeId }, function(err, dates) {
+    dates.sort(function(a, b) {
+      return a - b;
+    });
+
+    var previous = null;
+    async.eachSeries(dates, function(date, nextDate) {
+      debug('rolling up', this.name, date);
+      var data = { storeId: this.storeId, date: date };
+      AppSummary.findOne(data, function(err, summary) {
+        if(!summary) {
+          summary = new AppSummary(data);
+        }
+
+        if(summary.finalized) {
+          return nextDate();
+        }
+
+        summary.name = this.name;
+        summary.image = this.image;
+        summary.primaryUrl = this.primaryUrl;
+        summary.platform = this.platform;
+
+        StoreRating.find(
+          { storeId: summary.storeId, date: date, ratingCount: { $gt: 0 }},
+          { region: 1, ratingCount: 1, ratingAverage: 1 },
+          function(err, ratings) {
+          var worldTotal = worldCount = 0;
+          async.each(ratings, function(rating, nextRating) {
+            if(rating.region == 'en-us') {
+              summary.usaRatings = rating.ratingCount;
+              summary.usaAverage = Math.floor(rating.ratingAverage * 10) / 10;
+            }
+
+            worldCount += rating.ratingCount;
+            worldTotal += rating.ratingCount * rating.ratingAverage;
+
+            nextRating();
+          }, function(err) {
+            summary.worldRatings = worldCount;
+            summary.worldAverage = Math.floor(worldTotal / worldCount * 10) / 10;
+            summary.usaRatingsChange = 0;
+            summary.usaAverageChange = 0;
+            summary.worldRatingsChange = 0;
+            summary.worldAverageChange = 0;
+
+            if(previous) {
+              summary.usaRatingsChange = summary.usaRatings - previous.usaRatings;
+              summary.usaAverageChange = Math.floor((summary.usaAverage - previous.usaAverage) * 10) / 10;
+              summary.worldRatingsChange = summary.worldRatings - previous.worldRatings;
+              summary.worldAverageChange = Math.floor((summary.worldAverage - previous.worldAverage) * 10) / 10;
+            }
+
+            summary.save(function() {
+              previous = summary;
+              nextDate();
+            });
+          });
+        }.bind(this));
+      }.bind(this));
+    }.bind(this), done);
+  }.bind(this));
+}
 
 schema.methods.expandStoreLinks = function(done) {
   debug('total regions to verify', regions.length);

@@ -12,18 +12,28 @@ block content
       th US Average Rating
       th
     each app in apps
-      if app._id.platform == 'client'
-        - var status = (app.ratings >= 50 ? 'success' : 'danger');
-        - var message = (app.ratings >= 50 ? 'win!' : '');
-        tr.tt
+      if app.platform == 'client'
+        tr
           td
-            a(href='/details/' + app._id.storeId) #{app._id.name}
-          td #{app.ratings}
-          td #{app.ratings > 0 ? Math.floor((app.total * 10 / app.ratings))  / 10 : 0}
-          td #{app.usRatingCount}
-          td #{Math.floor(app.usRatingAverage * 10) / 10}
+            a(href='/details/' + app.storeId) #{app.name}
+          td #{app.worldRatings}
+            if app.worldRatingsChange != 0
+              sup
+                span.badge(class = app.worldRatingsChange > 0 ? 'alert-success' : 'alert-danger')= app.worldRatingsChange
+          td #{app.worldAverage}
+            if app.worldAverageChange != 0
+              sup
+                span.badge(class = app.worldAverageChange > 0 ? 'alert-success' : 'alert-danger')= app.worldAverageChange
+          td #{app.usaRatings}
+            if app.usaRatingsChange != 0
+              sup
+                small.badge(class = app.usaRatingsChange > 0 ? 'alert-success' : 'alert-danger')= app.usaRatingsChange
+          td #{app.usaAverage}
+            if app.usaAverageChange != 0
+              sup
+                small.badge(class = app.usaAverageChange > 0 ? 'alert-success' : 'alert-danger')= app.usaAverageChange
           td
-            a(href=app._id.storeUrl, target='_BLANK') view in store
+            a(href=app.storeUrl, target='_BLANK') view in store
   .page-header
     h1 phone apps
   table.table.table-hover.table-condensed
@@ -35,15 +45,25 @@ block content
       th US Average Rating
       th
     each app in apps
-      if app._id.platform == 'phone'
-        - var status = (app.ratings >= 50 ? 'success' : 'danger');
-        - var message = (app.ratings >= 50 ? 'win!' : '');
-        tr.tt()
+      if app.platform == 'phone'
+        tr
           td
-            a(href='/details/' + app._id.storeId) #{app._id.name}
-          td #{app.ratings}
-          td #{app.ratings > 0 ? Math.floor((app.total * 10 / app.ratings))  / 10 : 0}
-          td #{app.usRatingCount}
-          td #{Math.floor(app.usRatingAverage * 10) / 10}
+            a(href='/details/' + app.storeId) #{app.name}
+          td #{app.worldRatings}
+            if app.worldRatingsChange != 0
+              sup
+                span.badge(class = app.worldRatingsChange > 0 ? 'alert-success' : 'alert-danger')= app.worldRatingsChange
+          td #{app.worldAverage}
+            if app.worldAverageChange != 0
+              sup
+                span.badge(class = app.worldAverageChange > 0 ? 'alert-success' : 'alert-danger')= app.worldAverageChange
+          td #{app.usaRatings}
+            if app.usaRatingsChange != 0
+              sup
+                span.badge(class = app.usaRatingsChange > 0 ? 'alert-success' : 'alert-danger')= app.usaRatingsChange
+          td #{app.usaAverage}
+            if app.usaAverageChange != 0
+              sup
+                span.badge(class = app.usaAverageChange > 0 ? 'alert-success' : 'alert-danger')= app.usaAverageChange
           td
-            a(href=app._id.storeUrl, target='_BLANK') view in store
+            a(href=app.storeUrl, target='_BLANK') view in store

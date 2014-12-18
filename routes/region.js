@@ -1,23 +1,14 @@
 var StoreRating = require('../models/rating');
 var App = require('../models/app');
+var AppSummary = require('../models/app-summary');
 var debug = require('debug')('appreports:region');
 var ratings = require('../crawler/ratings');
 var crawler = require('../crawler/');
 var async = require('async');
 
 exports.list = function(req, res) {
-  StoreRating.getList(function(err, details) {
-    async.each(details, function(app, next) {
-      StoreRating.findOne({ storeId: app._id.storeId, date: StoreRating.today(), region: 'en-us' }, function(err, us) {
-        app.usRatingCount = us.ratingCount;
-        app.usRatingAverage = us.ratingAverage;
-        app.usRatingTotal = us.ratingTotal;
-        next();
-      });
-    }, function() {
-      debug('got list');
-      res.render('list', { apps: details });
-    });
+  AppSummary.find({ date: StoreRating.today() }, function(err, apps) {
+    res.render('list', { apps: apps });
   });
 };
 
