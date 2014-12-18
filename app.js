@@ -12,7 +12,6 @@ if(!process.env.MONGO_URI) {
 	throw 'Must set MONGO_URI environment variable';
 }
 mongoose.connect(process.env.MONGO_URI);
-mongoose.set('debug', true);
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');

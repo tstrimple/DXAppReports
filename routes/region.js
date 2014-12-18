@@ -67,7 +67,17 @@ exports.sync = function(req, res) {
   };
 
   ratings.processStoreLinks(options, function() {
-    res.send('done');
+    debug('fetching raw data');
+    App.find().exec(function(err, apps) {
+      debug('rolling up data');
+      async.each(apps, function(app, nextApp) {
+        app.rollUp(nextApp);
+      }, function(err) {
+        debug(err);
+        res.send('done');
+      });
+    });
+
   });
 };
 
