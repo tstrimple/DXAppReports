@@ -25,3 +25,11 @@ div.tooltip {
 .badge {
   font-size: 0.9em;
 }
+
+#sync-started {
+  display: none;
+}
+
+#sync-completed {
+  display: none;
+}

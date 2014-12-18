@@ -22,6 +22,7 @@ function processStoreLinks(options, done) {
     var count = 0;
     var max = storeLinks.length;
     debug('processing urls', storeLinks.length);
+    var totalNewReviews = 0;
     async.eachLimit(storeLinks, 20, function(storeLink, next) {
       crawler.fetchAppRating(storeLink.url, function(err, ratings, ratingValue) {
         storeLink.processedAt = moment().tz('America/Los_Angeles').toDate();
@@ -41,6 +42,9 @@ function processStoreLinks(options, done) {
             }
 
             doc.primaryUrl = storeLink.primaryUrl;
+            if(doc.ratingCount != ratings) {
+              totalNewReviews += ratings - doc.ratingCount || 0;
+            }
             doc.ratingCount = ratings;
             doc.ratingAverage = ratingValue;
             doc.ratingTotal = ratings * ratingValue;
@@ -55,7 +59,9 @@ function processStoreLinks(options, done) {
           });
         })(data, count, next);
       });
-    }, done);
+    }, function() {
+      done(totalNewReviews);
+    });
   });
 }
 

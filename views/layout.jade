@@ -20,10 +20,38 @@ html
             .form-group
               input.form-control(type='text', name='storeUrl', placeholder='store url')
             button.btn.btn-default(type='submit') add app
+    #sync-started.alert.alert-warning(role='alert')
+      span <strong>Sync Started</strong> Checking the store for updated ratings
+
+    #sync-completed.alert.alert-success(role='alert')
+      #hide-completed.button.close(type='button')
+        span(aria-hidden='true') &times;
+        span.sr-only close
+      span <strong>Sync Completed </strong><span id='completed-message'></span>
+
     block content
     script(src='//code.jquery.com/jquery.js')
     script(src='/js/bootstrap.min.js')
+    script(src='/socket.io/socket.io.js')
     script.
       $(document).ready(function() {
-        $('.tt').tooltip();
+        var socket = io.connect();
+        socket.on('sync-started', function() {
+          $('#sync-started').show();
+          $('#sync-completed').hide();
+        });
+
+        socket.on('sync-completed', function(newRatings) {
+          $('#sync-started').hide();
+          if(newRatings > 0) {
+            $('#completed-message').text('found ' + newRatings + ' new ratings!');
+          } else {
+            $('#completed-message').text('no new ratings found');
+          }
+          $('#sync-completed').show();
+        });
+
+        $('#hide-completed').click(function() {
+          $('#sync-completed').hide();
+        });
       });

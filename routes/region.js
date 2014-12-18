@@ -60,27 +60,6 @@ exports.update = function(req, res) {
   });
 };
 
-exports.sync = function(req, res) {
-  var options = {
-    limit: req.query.limit,
-    storeId: req.query.storeId
-  };
-
-  ratings.processStoreLinks(options, function() {
-    debug('fetching raw data');
-    App.find().exec(function(err, apps) {
-      debug('rolling up data');
-      async.each(apps, function(app, nextApp) {
-        app.rollUp(nextApp);
-      }, function(err) {
-        debug(err);
-        res.send('done');
-      });
-    });
-
-  });
-};
-
 exports.add = function(req, res) {
   debug('trying add', req.body);
   var storeUrl = req.body.storeUrl;
