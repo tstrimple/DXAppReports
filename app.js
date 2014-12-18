@@ -51,6 +51,8 @@ app.get('/sync', function(req, res) {
           res.send('done');
       });
     });
+  }, function(percent) {
+    io.emit('sync-progress', percent);
   });
 });
 
