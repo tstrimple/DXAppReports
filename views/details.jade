@@ -15,4 +15,10 @@ block content
         td #{region.ratingCount}
         td #{Math.floor(region.ratingAverage * 10) / 10}
         td
-          a(href=region.url, target='_BLANK') view in regional store
+          a.btn.btn-xs.btn-primary(href=region.url, target='_BLANK') view in store
+          if region.region.indexOf('en-') != 0
+            form(action='http://www.microsofttranslator.com/bv.aspx',method='post',target='_BLANK')
+              input(type='hidden', name='from', value='')
+              input(type='hidden', name='to', value='en')
+              input(type='hidden', name='a', value=region.url)
+              button.btn.btn-xs.btn-primary(type='submit') translate

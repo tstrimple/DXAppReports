@@ -14,8 +14,7 @@ block content
     each app in apps
       if app.platform == 'client'
         tr
-          td
-            a(href='/details/' + app.storeId) #{app.name}
+          td #{app.name}
           td #{app.worldRatings}
             if app.worldRatingsChange != 0
               sup
@@ -33,7 +32,8 @@ block content
               sup
                 small.badge(class = app.usaAverageChange > 0 ? 'alert-success' : 'alert-danger')= app.usaAverageChange
           td
-            a(href=app.primaryUrl, target='_BLANK') view in store
+            a.btn.btn-xs.btn-primary(href=app.primaryUrl, target='_BLANK') view in store
+            a.breakdown.btn.btn-xs.btn-primary(href='/details/' + app.storeId) breakdown
   .page-header
     h1 phone apps
   table.table.table-hover.table-condensed
@@ -47,8 +47,7 @@ block content
     each app in apps
       if app.platform == 'phone'
         tr
-          td
-            a(href='/details/' + app.storeId) #{app.name}
+          td #{app.name}
           td #{app.worldRatings}
             if app.worldRatingsChange != 0
               sup
@@ -66,4 +65,5 @@ block content
               sup
                 span.badge(class = app.usaAverageChange > 0 ? 'alert-success' : 'alert-danger')= app.usaAverageChange
           td
-            a(href=app.primaryUrl, target='_BLANK') view in store
+            a.btn.btn-xs.btn-primary(href=app.primaryUrl, target='_BLANK') view in store
+            a.breakdown.btn.btn-xs.btn-primary(href='/details/' + app.storeId) breakdown

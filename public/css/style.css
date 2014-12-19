@@ -33,3 +33,18 @@ div.tooltip {
 #sync-completed {
   display: none;
 }
+
+form {
+  display: inline;
+  margin: 0px;
+  padding: 0px;
+  margin-left: 12px;
+}
+
+a.btn {
+  display: inline;
+}
+
+a.breakdown {
+  margin-left: 12px;
+}

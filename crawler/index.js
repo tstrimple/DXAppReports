@@ -27,6 +27,9 @@ exports.fetchAppRating = function(url, callback) {
     $ = cheerio.load(body);
 
     var ratingCount = $('meta[itemprop="ratingCount"]').attr("content");
+    if(!ratingCount) {
+      ratingCount = '0';
+    }
     ratingCount = ratingCount.replace(',', '');
     ratingCount = parseInt(ratingCount);
 
