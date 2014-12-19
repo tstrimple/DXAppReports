@@ -4,7 +4,6 @@ var moment = require('moment-timezone');
 var util = require('util');
 var StoreLink = require('./link');
 var StoreRating = require('./rating');
-var regions = require('../data/regions');
 var async = require('async');
 var crawler = require('../crawler/');
 var debug = require('debug')('appreports:app');

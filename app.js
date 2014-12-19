@@ -23,6 +23,8 @@ app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.locals.regionMap = require('./data/regions');
+
 app.get('/', region.list);
 app.get('/details/:storeId', region.details);
 app.post('/add', region.add);

@@ -87,14 +87,14 @@ schema.methods.rollUp = function(done) {
 }
 
 schema.methods.expandStoreLinks = function(done) {
-  debug('total regions to verify', regions.length);
+  debug('total regions to verify', Object.keys(regions).length);
   crawler.fetchAppDetails(this.primaryUrl, function(err, details) {
     debug('updating name', details.name);
     this.name = details.name;
     this.save();
   }.bind(this));
 
-  async.eachLimit(regions, 20, function(region, nextRegion) {
+  async.eachLimit(Object.keys(regions), 20, function(region, nextRegion) {
     var url = this.getUrl(region);
     crawler.getStatus(url, function(status) {
       var data = {

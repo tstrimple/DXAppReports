@@ -10,8 +10,8 @@ block content
       th Average Rating
       th
     each region in regions
-      tr.tt()
-        td #{region.region}
+      tr
+        td #{regionMap[region.region]}
         td #{region.ratingCount}
         td #{Math.floor(region.ratingAverage * 10) / 10}
         td
