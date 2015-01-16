@@ -9,15 +9,17 @@ var crawler = require('app/crawler');
 
 function getAppSummary(req, res) {
   AppSummary.getCurrentSummary(function(err, summary) {
-    res.render('list', { apps: summary })
+    res.render('summary', { apps: summary })
   });
 }
 
 function getAppDetails(req, res) {
-  App.findOne({ storeId: req.params.storeId }, function(err, app) {
-    AppRating.getDetails(req.params.storeId, function(err, regions) {
-      res.render('details', { app: app, regions: regions });
-    });
+  if(!req.params.storeId) {
+    return res.redirect('/');
+  }
+
+  App.getDetails(req.params.storeId, function(err, app, regions) {
+    res.render('details', { app: app, regions: regions });
   });
 }
 

@@ -9,7 +9,6 @@ var async = require('async');
 
 require('app/db').connect();
 
-var routes = require('./routes')(io);
 var port = process.env.PORT || 3000;
 
 app.locals.regionMap = require('app/regions');
@@ -21,7 +20,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+app.use('/', require('./routes')(io));
 
 server.listen(port, function() {
   debug('Server listening on port ' + port);

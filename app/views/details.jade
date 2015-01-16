@@ -11,7 +11,7 @@ block content
       th
     each region in regions
       tr
-        td #{regionMap[region.region]}
+        td #{regionMap[region.region].name}
         td #{region.ratingCount}
         td #{Math.floor(region.ratingAverage * 10) / 10}
         td
