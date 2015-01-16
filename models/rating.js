@@ -1,6 +1,6 @@
-  var mongoose = require('mongoose');
+var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var moment = require('moment-timezone');
+var now = require('../data/now');
 var util = require('util');
 var debug = require('debug')('appreports:store-ratings');
 
@@ -20,7 +20,7 @@ var schema = new Schema({
 });
 
 schema.statics.today = function() {
-  return moment().tz('America/Los_Angeles').format('YYYYMMDD') * 1;
+  return now().format('YYYYMMDD') * 1;
 }
 
 schema.statics.yesterday = function() {

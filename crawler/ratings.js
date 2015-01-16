@@ -3,7 +3,7 @@ var StoreLink = require('../models/link');
 var StoreRating = require('../models/rating');
 var mongoose = require('mongoose');
 var async = require('async');
-var moment = require('moment-timezone');
+var now = require('../data/now');
 var crawler = require('./index');
 var debug = require('debug')('appreports:crawler:ratings');
 
@@ -31,7 +31,7 @@ function processStoreLinks(options, done, progress) {
     var current = 0;
     async.eachLimit(storeLinks, 20, function(storeLink, next) {
       crawler.fetchAppRating(storeLink.url, function(err, ratings, ratingValue) {
-        storeLink.processedAt = moment().tz('America/Los_Angeles').toDate();
+        storeLink.processedAt = now().toDate();
         storeLink.save();
         //debug('processing', storeLink.url);
 

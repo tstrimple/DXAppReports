@@ -1,12 +1,5 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var moment = require('moment-timezone');
-var util = require('util');
-var StoreLink = require('./link');
-var StoreRating = require('./rating');
-var async = require('async');
-var crawler = require('../crawler/');
-var debug = require('debug')('appreports:app');
 
 var appSummarySchema = new Schema({
   storeId: String,
