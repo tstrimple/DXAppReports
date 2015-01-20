@@ -13,10 +13,15 @@ html
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='/') App Reporting #{version}
+          a.navbar-brand(href='/') App Reports #{version}
+          ul.nav.navbar-nav
+            li
+              a(href='/') App Rating Report
+            li
+              a(href='/stale') Stale App Report
         #navigation.collapse.navbar-collapse
           ul.nav.navbar-nav
-          form.navbar-form.navbar-right(action='/add', method='post')
+          form.navbar-form.navbar-right(action='/add?includeAppRatings=true', method='post')
             .form-group
               input.form-control(type='text', name='storeUrl', placeholder='store url')
             button.btn.btn-default(type='submit') add app

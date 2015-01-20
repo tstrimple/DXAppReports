@@ -1,0 +1,67 @@
+extends layout
+
+block content
+  .page-header
+    h1 Stale App Report
+  table.table.table-hover.table-condensed
+    tr.success
+      th Updated in the last week
+      th Platform
+      th Published
+      th Last Updated
+      th
+    each app in freshApps
+      tr.success
+        td= app.name
+        td= app.platform
+        td= app.getDatePublished()
+        td= app.getAgeHuman()
+        td
+          a.btn.btn-xs.btn-primary(href=app.primaryUrl, target='_BLANK') view in store
+    tr
+      td(colspan=4)
+    tr.danger
+      th Removed from the store
+      th Platform
+      th
+      th
+      th
+    each app in deadApps
+      tr.danger
+        td #{app.name}
+        td= app.platform
+        td
+        td
+        td
+    tr
+      td(colspan=4)
+    tr.danger
+      th Last updated over a year ago
+      th Platform
+      th Published
+      th Last Updated
+      th
+    each app in dangerApps
+      tr.danger
+        td= app.name
+        td= app.platform
+        td= app.getDatePublished()
+        td= app.getAgeHuman()
+        td
+          a.btn.btn-xs.btn-primary(href=app.primaryUrl, target='_BLANK') view in store
+    tr
+      td(colspan=4)
+    tr.warning
+      th Last updated over six months ago
+      th Platform
+      th Published
+      th Last Updated
+      th
+    each app in warningApps
+      tr.warning
+        td= app.name
+        td= app.platform
+        td= app.getDatePublished()
+        td= app.getAgeHuman()
+        td
+          a.btn.btn-xs.btn-primary(href=app.primaryUrl, target='_BLANK') view in store

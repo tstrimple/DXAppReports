@@ -23,8 +23,15 @@ function getAppDetails(req, res) {
   });
 }
 
+function getStaleAppSummary(req, res) {
+  App.getStaleAppSummary(function(err, staleAppSummary) {
+    res.render('stale', staleAppSummary);
+  });
+}
+
 function addApp(req, res) {
   debug('trying add', req.body);
+  var includeAppRatings = req.query.includeAppRatings || false;
   var storeUrl = req.body.storeUrl;
   var segment = req.body.segment;
   if(!storeUrl) {
@@ -40,6 +47,7 @@ function addApp(req, res) {
     app.parseUrl(storeUrl);
     crawler.fetchAppDetails(app.primaryUrl, function(err, details) {
       app.name = details.name;
+      app.includeAppRatings = includeAppRatings;
       debug('saving new app');
       app.save(function() {
         debug('expanding AppLinks');
@@ -51,6 +59,13 @@ function addApp(req, res) {
         });
       });
     });
+  });
+}
+
+function syncApps(req, res) {
+  App.updateApps(function(err) {
+    debug('done updating apps', err);
+    res.send('done');
   });
 }
 
@@ -82,8 +97,10 @@ module.exports = function(io) {
   var router = require('express').Router();
 
   router.get('/', getAppSummary);
+  router.get('/stale', getStaleAppSummary);
   router.get('/details/:storeId', getAppDetails);
   router.get('/sync', syncRatings.bind(null, io));
+  router.get('/syncApps', syncApps);
   router.post('/add', addApp);
 
   return router;
