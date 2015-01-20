@@ -12,6 +12,8 @@ require('app/db').connect();
 var port = process.env.PORT || 3000;
 
 app.locals.regionMap = require('app/regions');
+app.locals.version = require('../package.json').version;
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(bodyParser.urlencoded({
