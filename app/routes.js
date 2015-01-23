@@ -18,6 +18,8 @@ passport.deserializeUser(function(user, done) {
 });
 
 passport.use(new WindowsActiveDirectoryStrategy({
+    homeRealm: 'microsoft.com',
+    homerealm: 'microsoft.com',
     realm: process.env.AUTH_REALM || 'https://appreports.azurewebsites.net/',
     identityProviderUrl: 'https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47/wsfed',
     identityMetadata: 'https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47/federationmetadata/2007-06/federationmetadata.xml',
@@ -138,12 +140,12 @@ module.exports = function(io) {
   router.post('/add', ensureAuthenticated, addApp);
 
 
-  router.get('/notauthorized', function(req, res) { 
-    if(!req.isAuthenticated()) { 
-      res.render('notauthorized'); 
-    } else { 
-      res.redirect('/'); 
-    } 
+  router.get('/notauthorized', function(req, res) {
+    if(!req.isAuthenticated()) {
+      res.render('notauthorized');
+    } else {
+      res.redirect('/');
+    }
   });
 
   router.get('/sync', syncRatings.bind(null, io));
