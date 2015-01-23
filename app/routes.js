@@ -122,7 +122,6 @@ function syncRatings(io, req, res) {
 }
 
 function ensureAuthenticated(req, res, next) {
-  console.log('user', req.user);
   if (req.isAuthenticated()) {
     res.locals.user = req.user;
     return next();
