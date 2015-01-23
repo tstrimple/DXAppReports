@@ -46,7 +46,7 @@ function getAppDetails(req, res) {
     return res.redirect('/');
   }
 
-  App.getDetails(req.params.storeId, function(err, app, regions) {
+  App.getDetails(req.params.storeId, req.query.date || null, function(err, app, regions) {
     res.render('details', { app: app, regions: regions });
   });
 }
