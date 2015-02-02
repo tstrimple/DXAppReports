@@ -19,10 +19,12 @@ html
               a(href='/') App Rating Report
             li
               a(href='/stale') Stale App Report
+            li
+              a(href='/dump') Export to CSV
         #navigation.collapse.navbar-collapse
           if(user)
             ul.nav.navbar-nav.navbar-right
-              li 
+              li
                 a(href='/logout') Welcome #{user.name}
     #sync-started.alert.alert-warning(role='alert')
       .message <strong>Sync Started</strong> Checking the store for updated ratings

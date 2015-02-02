@@ -1,12 +1,13 @@
 var debug = require('debug')('appreports:region');
 var async = require('async');
-
+var util = require('util');
 var App = require('models/app');
 var AppRating = require('models/app-rating');
 var AppSummary = require('models/app-summary');
 var AppLink = require('models/app-link');
 var crawler = require('app/crawler');
 var passport = require('passport');
+var convertDateString = require('app/date').convertDateString;
 var WindowsActiveDirectoryStrategy = require('passport-azure-ad').WsfedStrategy;
 
 passport.serializeUser(function(user, done) {
@@ -38,6 +39,18 @@ passport.use(new WindowsActiveDirectoryStrategy({
 function getAppSummary(req, res) {
   AppSummary.getCurrentSummary(function(err, summary) {
     res.render('summary', { apps: summary })
+  });
+}
+
+function dumpApps(req, res) {
+  res.writeHead(200, {'Content-Type': 'text/csv', 'Content-Disposition': 'attachment;filename=apps.csv'});
+  res.write('store id, name, primary url, platform, date published, last updated, software version\n');
+  App.each(function(app, nextApp) {
+    res.write(util.format('%s, %s, %s, %s, %s, %s, %s\n',
+      app.storeId, app.name.replace(/,/g, ''), app.primaryUrl, app.platform, convertDateString(app.datePublished, 'YYYYMMDD', 'YYYY-MM-DD') || '', convertDateString(app.lastUpdated, 'YYYYMMDD' || '', 'YYYY-MM-DD'), app.softwareVersion || ''));
+      nextApp();
+  }, function() {
+    res.end();
   });
 }
 
@@ -137,7 +150,7 @@ module.exports = function(io) {
   router.get('/stale', ensureAuthenticated, getStaleAppSummary);
   router.get('/details/:storeId', ensureAuthenticated, getAppDetails);
   router.post('/add', ensureAuthenticated, addApp);
-
+  router.get('/dump', ensureAuthenticated, dumpApps);
 
   router.get('/notauthorized', function(req, res) {
     if(!req.isAuthenticated()) {
