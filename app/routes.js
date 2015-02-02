@@ -47,7 +47,7 @@ function dumpApps(req, res) {
   res.write('store id, name, primary url, platform, date published, last updated, software version\n');
   App.each(function(app, nextApp) {
     res.write(util.format('%s, %s, %s, %s, %s, %s, %s\n',
-      app.storeId, app.name.replace(/,/g, ''), app.primaryUrl, app.platform, convertDateString(app.datePublished, 'YYYYMMDD', 'YYYY-MM-DD') || '', convertDateString(app.lastUpdated, 'YYYYMMDD' || '', 'YYYY-MM-DD'), app.softwareVersion || ''));
+      app.storeId, app.name.replace(/,/g, ''), app.primaryUrl, app.platform, convertDateString(app.datePublished, 'YYYYMMDD', 'YYYY-MM-DD') || '', convertDateString(app.lastUpdated, 'YYYYMMDD', 'YYYY-MM-DD') || '', app.softwareVersion || ''));
       nextApp();
   }, function() {
     res.end();
