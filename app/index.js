@@ -9,7 +9,7 @@ var async = require('async');
 var passport = require('passport');
 var session = require('express-session');
 var mongoose = require('mongoose');
-var MongoStore = require('connect-mongodb');
+var MongoStore = require('connect-mongostore');
 
 require('app/db').connect();
 
