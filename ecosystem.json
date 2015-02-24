@@ -7,7 +7,7 @@
       "log_date_format": "YYYY-MM-DD HH:mm Z",
       "error_file": "/var/log/dxappreports/error.log",
       "out_file": "/var/log/dxappreports/access.log",
-      "pid_file": "/var/run/dxappreports.pid",
+      "pid_file": "/tmp/dxappreports.pid",
       "instances": 0,
       "watch": false,
       "ignore_watch": [
