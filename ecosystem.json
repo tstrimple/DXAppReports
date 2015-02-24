@@ -1,0 +1,26 @@
+{
+  "apps": [
+    {
+      "name": "DXAppReports",
+      "cwd": "/var/www/",
+      "script": "app/index.js",
+      "log_date_format": "YYYY-MM-DD HH:mm Z",
+      "error_file": "/var/log/dxappreports/error.log",
+      "out_file": "/var/log/dxappreports/access.log",
+      "pid_file": "/var/run/dxappreports.pid",
+      "instances": 0,
+      "watch": false,
+      "ignore_watch": [
+        "[\\/\\\\]\\./",
+        "node_modules"
+      ],
+      "merge_logs": true,
+      "exec_mode": "cluster",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 8000,
+        "MONGO_URI": "mongodb://vm01,vm02,vm01/appreports"
+      }
+    }
+  ]
+}
