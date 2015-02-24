@@ -19,7 +19,9 @@
       "env": {
         "NODE_ENV": "production",
         "PORT": 8000,
-        "MONGO_URI": "mongodb://vm01,vm02,vm01/appreports"
+        "MONGO_URI": "mongodb://vm01,vm02,vm01/appreports",
+        "AUTH_REALM": "http://dxappreports.cloudapp.net",
+        "AUTH_LOGOUT": "http://dxappreports.cloudapp.net/notauthorized"
       }
     }
   ]
