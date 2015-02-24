@@ -8,6 +8,9 @@ var bodyParser = require('body-parser');
 var async = require('async');
 var passport = require('passport');
 var session = require('express-session');
+var mongoose = require('mongoose');
+var MongoStore = require('connect-mongodb');
+
 
 require('app/db').connect();
 
@@ -26,7 +29,8 @@ app.use(bodyParser.json());
 app.use(session({
   secret: process.env.SESSION_SECRET || 'super secret key',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: new MongoStore({ db: mongoose.connection.db });
 }));
 
 app.use(passport.initialize());
