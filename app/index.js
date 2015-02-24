@@ -11,7 +11,6 @@ var session = require('express-session');
 var mongoose = require('mongoose');
 var MongoStore = require('connect-mongodb');
 
-
 require('app/db').connect();
 
 var port = process.env.PORT || 3000;
@@ -30,7 +29,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'super secret key',
   resave: false,
   saveUninitialized: true,
-  store: new MongoStore({ db: mongoose.connection.db });
+  store: new MongoStore({ db: mongoose.connection.db })
 }));
 
 app.use(passport.initialize());
