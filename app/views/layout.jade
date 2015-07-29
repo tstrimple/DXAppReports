@@ -5,6 +5,10 @@ html
     link(rel='stylesheet', href='/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/style.css')
   body
+    form(action='add', method='post')
+      input(type='hidden', name='includeAppRatings', value='true')
+      input(type='text', name='storeUrl')
+      input(type='submit')
     nav.navbar.navbar-default(role = 'navigation')
       .container-fluid
         .navbar-header
